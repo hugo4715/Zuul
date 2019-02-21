@@ -1,5 +1,4 @@
 *.iml
-doc/
 *.class
 *.ctxt
 *.bluej
