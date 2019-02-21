@@ -1,4 +1,4 @@
-http://www.esiee.fr/~bureaud/
-unites.htm
+http://www.esiee.fr/~deniauh
 
-POUR CEUX QUI NE RENDENT PAS DE PAGE WEB
+Le site web étant actuellement en cours de création,
+ce lien redirige actuellement vers le dépot git du projet.
