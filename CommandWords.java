@@ -30,10 +30,13 @@ public class CommandWords
      * @return a String with all the command available
      */
     public String getCommandList(){
-        String vMsg = "";
-        for(String vCmd : sValidCommands)vMsg += vCmd + " ";
-        vMsg += "\n";
-        return vMsg;
+        StringBuilder vMsg = new StringBuilder();
+        for(String vCmd : sValidCommands){
+            vMsg.append(vCmd);
+            vMsg.append(' ');
+        }
+        vMsg.append('\n');
+        return vMsg.toString();
     }
     
     /**

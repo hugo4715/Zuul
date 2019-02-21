@@ -50,11 +50,12 @@ public class Room
      * @return A String with the exits
      */
     public String getExitString(){        
-        String vString = "Exits: ";
+        StringBuilder vString = new StringBuilder("Exits: ");
         for(String key : this.aExits.keySet()){
-            vString += key + " ";
+            vString.append(key);
+            vString.append(' ');
         }
-        return vString;
+        return vString.toString();
     }
     
     /**
