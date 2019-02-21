@@ -25,9 +25,15 @@ public class CommandWords
         // rien a faire pour le moment...
     } // CommandWords()
 
-    public void showAll(){
-        for(String vCmd : sValidCommands)System.out.print(vCmd + ",");
-        System.out.println();
+     /**
+     * Get all the available commands
+     * @return a String with all the command available
+     */
+    public String getCommandList(){
+        String vMsg = "";
+        for(String vCmd : sValidCommands)vMsg += vCmd + " ";
+        vMsg += "\n";
+        return vMsg;
     }
     
     /**

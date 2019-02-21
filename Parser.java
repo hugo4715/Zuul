@@ -33,8 +33,12 @@ public class Parser
         // System.in designe le clavier, comme System.out designe l'ecran
     } // Parser()
 
-    public void showCommands(){
-        this.aValidCommands.showAll();
+    /**
+     * Get all the available commands
+     * @return a String with all the command available
+     */
+    public String getCommands(){ 
+        return this.aValidCommands.getCommandList();
     }
     
     /**

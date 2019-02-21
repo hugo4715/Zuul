@@ -20,8 +20,8 @@ public class Game
      */
     public void play(){
         this.printWelcome();
+        
         boolean vFinished = false;
-
         while(!vFinished){
             Command vCommand = aParser.getCommand();
            
@@ -56,7 +56,7 @@ public class Game
     }
 
     /**
-     * Print the welcome message to the room
+     * Print the welcome message 
      */
     private void printWelcome(){
         System.out.println("World of Zuul is a new, incredibly boring adventure game.");
@@ -81,11 +81,14 @@ public class Game
         System.out.println("You are lost. You are alone.");
         System.out.println("You wander around at the university.");
         System.out.println();
-        System.out.println("Your command words are: ");
-        this.aParser.showCommands(); 
+        System.out.println("Your command words are: " + this.aParser.getCommands()); 
     }
     
-    public void eat(final Command pCommand){
+    /**
+     * Handle the eat command
+     * @param pCommand Handle the eat command
+     */
+    private void eat(final Command pCommand){
         System.out.println("You have eaten now and you are not hungry any more.");
     }
 
@@ -132,7 +135,11 @@ public class Game
         return false;
     }
 
-    public void look(final Command pCommand){
+    /**
+     * Handle the look command
+     * @param pCommand The Command to handle
+     */
+    private void look(final Command pCommand){
         this.printLocationInfo();
     }
 
