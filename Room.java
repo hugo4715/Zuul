@@ -1,6 +1,5 @@
  
 import java.util.HashMap;
-import java.util.Map.Entry;
 
 /**
  * A class representing a room
@@ -9,14 +8,16 @@ public class Room
 {
     private String aDescription;
     private HashMap<String,Room> aExits;
-    
+    private String aImageName;
+
     /**
      * Create a new room
      * @param pDescription The room description
      */
-    public Room(final String pDescription){
+    public Room(final String pDescription, final String pImage){
         this.aDescription = pDescription;
-        this.aExits = new HashMap();
+        this.aExits = new HashMap<>();
+        this.aImageName = pImage;
     }
 
     /**
@@ -57,7 +58,11 @@ public class Room
         }
         return vString.toString();
     }
-    
+
+    public String getImageName() {
+        return aImageName;
+    }
+
     /**
      * Return the long description of the room
      * @return The long description of this room (eg. 'You are in [...]. Exits: [...]

@@ -1,0 +1,12 @@
+pages:
+  script:
+    - mkdir .public
+    - cd doc
+    - cp -r * ../.public
+    - cd ..
+    - mv .public public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master

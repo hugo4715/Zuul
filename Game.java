@@ -1,4 +1,6 @@
- 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * A class with all the logic to make our game run
  */
@@ -7,10 +9,12 @@ public class Game
     private Room aCurrentRoom;
     private Parser aParser;
 
+    private Map<String,Room> rooms;
     /**
      * Create a new game
      */
     public Game() {
+        this.rooms = new HashMap<>();
         this.aParser = new Parser();
         this.createRooms();
     }
@@ -35,21 +39,32 @@ public class Game
      * Create all the rooms and set the exits
      */
     private void createRooms(){
-        Room vPrison = new Room("locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ");        
-        Room vCorridor1 = new Room("now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ");
-        Room vCorridor2 = new Room("now in another corridor, you can see two closed doors.");
-        Room vCafeteria = new Room("in inside what look like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.");
-        Room vLabo = new Room("now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ");
-        
+        String vDefaultImage = "default.png";
+
+        Room vPrison = new Room("locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ",vDefaultImage);
+        this.rooms.put("prison",vPrison);
+
+        Room vCorridor1 = new Room("now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ",vDefaultImage);
+        this.rooms.put("corridor1",vCorridor1);
+
+        Room vCorridor2 = new Room("now in another corridor, you can see two closed doors.",vDefaultImage);
+        this.rooms.put("corridor2",vCorridor2);
+
+        Room vCafeteria = new Room("in inside what look like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.",vDefaultImage);
+        this.rooms.put("cafetaria",vCafeteria);
+
+        Room vLabo = new Room("now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ",vDefaultImage);
+        this.rooms.put("labo",vLabo);
+
         vPrison.setExit("east", vCorridor1);
         vCorridor1.setExit("west",vPrison);
-        
+
         vCorridor1.setExit("south", vCorridor2);
         vCorridor2.setExit("north", vCorridor1);
-        
+
         vCorridor2.setExit("east", vCafeteria);
         vCafeteria.setExit("west", vCorridor2);
-        
+
         vLabo.setExit("down",vCafeteria);
 
         this.aCurrentRoom = vPrison;
