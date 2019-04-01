@@ -1,3 +1,6 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *  This class is part of the "World of Zuul" application. 
  *  "World of Zuul" is a very simple, text based adventure game.
@@ -9,23 +12,23 @@
  * @author  Michael Kolling and David J. Barnes
  * @version 1.0 (Jan 2003)
  */
-public class GameEngine
-{
+public class GameEngine {
+
     private Parser parser;
     private Room currentRoom;
     private UserInterface gui;
+    private Map<String,Room> rooms;
 
     /**
      * Constructor for objects of class GameEngine
      */
-    public GameEngine()
-    {
+    public GameEngine(){
+        this.rooms = new HashMap<>();
         parser = new Parser();
         createRooms();
     }
 
-    public void setGUI(UserInterface userInterface)
-    {
+    public void setGUI(UserInterface userInterface){
         gui = userInterface;
         printWelcome();
     }
@@ -33,8 +36,7 @@ public class GameEngine
     /**
      * Print out the opening message for the player.
      */
-    private void printWelcome()
-    {
+    private void printWelcome(){
         gui.print("\n");
         gui.println("Welcome to the World of Zuul!");
         gui.println("World of Zuul is a new, incredibly boring adventure game.");
@@ -47,32 +49,36 @@ public class GameEngine
     /**
      * Create all the rooms and link their exits together.
      */
-    private void createRooms()
-    {
-        Room outside, theatre, pub, lab, office;
+    private void createRooms(){
+        String vDefaultImage = "default.png";
 
-        // create the rooms
-        outside = new Room("outside the main entrance of the university", "outside.gif");
-        theatre = new Room("in a lecture theatre", "castle.gif");
-        pub = new Room("in the campus pub", "courtyard.gif");
-        lab = new Room("in a computing lab", "stairs.gif");
-        office = new Room("the computing admin office", "dungeon.gif");
-        
-        // initialise room exits
-        outside.setExit("east", theatre);
-        outside.setExit("south", lab);
-        outside.setExit("west", pub);
+        Room vPrison = new Room("locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ",vDefaultImage);
+        this.rooms.put("prison",vPrison);
 
-        theatre.setExit("west", outside);
+        Room vCorridor1 = new Room("now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ",vDefaultImage);
+        this.rooms.put("corridor1",vCorridor1);
 
-        pub.setExit("east", outside);
+        Room vCorridor2 = new Room("now in another corridor, you can see two closed doors.",vDefaultImage);
+        this.rooms.put("corridor2",vCorridor2);
 
-        lab.setExit("north", outside);
-        lab.setExit("east", office);
+        Room vCafeteria = new Room("in inside what look like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.",vDefaultImage);
+        this.rooms.put("cafetaria",vCafeteria);
 
-        office.setExit("west", lab);
+        Room vLabo = new Room("now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ",vDefaultImage);
+        this.rooms.put("labo",vLabo);
 
-        currentRoom = outside;  // start game outside
+        vPrison.setExit("east", vCorridor1);
+        vCorridor1.setExit("west",vPrison);
+
+        vCorridor1.setExit("south", vCorridor2);
+        vCorridor2.setExit("north", vCorridor1);
+
+        vCorridor2.setExit("east", vCafeteria);
+        vCafeteria.setExit("west", vCorridor2);
+
+        vLabo.setExit("down",vCafeteria);
+
+        this.currentRoom = vPrison;
     }
 
     /**
@@ -80,8 +86,7 @@ public class GameEngine
      * If this command ends the game, true is returned, otherwise false is
      * returned.
      */
-    public void interpretCommand(String commandLine) 
-    {
+    public void interpretCommand(String commandLine) {
         gui.println(commandLine);
         Command command = parser.getCommand(commandLine);
 
@@ -90,16 +95,29 @@ public class GameEngine
             return;
         }
 
-        String commandWord = command.getCommandWord();
-        if (commandWord.equals("help"))
-            printHelp();
-        else if (commandWord.equals("go"))
-            goRoom(command);
-        else if (commandWord.equals("quit")) {
-            if(command.hasSecondWord())
-                gui.println("Quit what?");
-            else
-                endGame();
+        switch (command.getCommandWord()){
+            case "help":
+                printHelp();
+                break;
+            case "go":
+                goRoom(command);
+                break;
+            case "quit":
+                if(command.hasSecondWord()) {
+                    gui.println("Quit what?");
+                } else {
+                    endGame();
+                }
+                break;
+            case "eat":
+                eat(command);
+                break;
+            case "look":
+                look(command);
+                break;
+            default:
+                gui.println("I don't know what you mean...");
+
         }
     }
 
@@ -110,8 +128,7 @@ public class GameEngine
      * Here we print some stupid, cryptic message and a list of the 
      * command words.
      */
-    private void printHelp() 
-    {
+    private void printHelp() {
         gui.println("You are lost. You are alone. You wander");
         gui.println("around at Monash Uni, Peninsula Campus." + "\n");
         gui.print("Your command words are: " + parser.showCommands());
@@ -121,8 +138,7 @@ public class GameEngine
      * Try to go to one direction. If there is an exit, enter the new
      * room, otherwise print an error message.
      */
-    private void goRoom(Command command) 
-    {
+    private void goRoom(Command command) {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
             gui.println("Go where?");
@@ -144,8 +160,28 @@ public class GameEngine
         }
     }
 
-    private void endGame()
-    {
+    private void printLocationInfo(){
+        this.gui.println(this.currentRoom.getLongDescription());
+    }
+
+    /**
+     * Handle the look command
+     * @param pCommand The Command to handle
+     */
+    private void look(final Command pCommand){
+        this.printLocationInfo();
+    }
+
+    /**
+     * Handle the eat command
+     * @param pCommand Handle the eat command
+     */
+    private void eat(final Command pCommand){
+        this.gui.println("You have eaten now and you are not hungry any more.");
+    }
+
+
+    private void endGame(){
         gui.println("Thank you for playing.  Good bye.");
         gui.enable(false);
     }
