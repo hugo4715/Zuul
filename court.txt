@@ -2,3 +2,4 @@ look
 eat
 go east
 back
+quit
