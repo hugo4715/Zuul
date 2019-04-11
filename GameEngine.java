@@ -1,4 +1,10 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -129,6 +135,9 @@ public class GameEngine {
             case "back":
                 goBack(command);
                 break;
+            case "test":
+                test(command);
+                break;
             default:
                 gui.println("I don't know what you mean...");
 
@@ -136,6 +145,27 @@ public class GameEngine {
     }
 
     // implementations of user commands:
+
+
+    private void test(Command command) {
+        if(command.hasSecondWord()){
+            File file = new File(command.getSecondWord() + ".txt");
+
+            if(file.exists()){
+                try {
+                    Files.readAllLines(file.toPath()).forEach(this::interpretCommand);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    gui.println("Could not read " + file.getName() + "!");
+                }
+            }else{
+                gui.println("Unknown file " + file.getName());
+            }
+
+        }else{
+            gui.println("Please provide a file name!");
+        }
+    }
 
     private void goBack(Command command) {
         if(lastRooms.isEmpty()){
