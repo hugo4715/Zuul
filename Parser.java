@@ -17,36 +17,33 @@ import java.util.StringTokenizer;
  * @version 2.0 (Jan 2003)
  */
 
-public class Parser
-{
+public class Parser {
 
-    private CommandWords aCommandWords;  // holds all valid command words
+    private CommandWords commandWords;  // holds all valid command words
 
     /**
      * Create a new Parser.
      */
-    public Parser()
-    {
-        this.aCommandWords = new CommandWords();
+    public Parser() {
+        this.commandWords = new CommandWords();
     } // Parser()
 
     /**
      * Get a new command from the user. The command is read by
      * parsing the 'inputLine'.
      */
-    public Command getCommand( final String pInputLine )
-    {
+    public Command getCommand(final String inputLine) {
         String vWord1;
         String vWord2;
 
-        StringTokenizer tokenizer = new StringTokenizer( pInputLine );
+        StringTokenizer tokenizer = new StringTokenizer(inputLine);
 
-        if ( tokenizer.hasMoreTokens() )
+        if (tokenizer.hasMoreTokens())
             vWord1 = tokenizer.nextToken();      // get first word
         else
             vWord1 = null;
 
-        if ( tokenizer.hasMoreTokens() )
+        if (tokenizer.hasMoreTokens())
             vWord2 = tokenizer.nextToken();      // get second word
         else
             vWord2 = null;
@@ -56,18 +53,17 @@ public class Parser
         // Now check whether this word is known. If so, create a command
         // with it. If not, create a "null" command (for unknown command).
 
-        if ( this.aCommandWords.isCommand( vWord1 ) )
-            return new Command( vWord1, vWord2 );
+        if (this.commandWords.isCommand(vWord1))
+            return new Command(vWord1, vWord2);
         else
-            return new Command( null, vWord2 );
-    } // getCommand(.)
+            return new Command(null, vWord2);
+    }
 
     /**
      * Returns a String with valid command words.
      */
-    public String showCommands() // bad name for this method !
-    {
-        return this.aCommandWords.getCommandList();
-    } // showCommands() // bad name for this method !
+    public String getCommands() {
+        return this.commandWords.getCommandList();
+    }
 
-} // Parser
+}

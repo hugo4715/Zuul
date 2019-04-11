@@ -1,11 +1,8 @@
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A class with all the logic to make our game run
  */
-public class Game
-{
+public class Game {
 
     private UserInterface userInterface;
     private GameEngine gameEngine;
@@ -22,4 +19,4 @@ public class Game
     public static void main(String[] args) {
         new Game();
     }
-} // Game
+}

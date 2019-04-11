@@ -16,6 +16,7 @@ public class GameEngine {
 
     private Parser parser;
     private Room currentRoom;
+    private Room lastRoom;
     private UserInterface gui;
     private Map<String,Room> rooms;
 
@@ -52,7 +53,14 @@ public class GameEngine {
     private void createRooms(){
         String vDefaultImage = "default.png";
 
+
+        Item itemBattery = new Item("battery",1);
+        Item itemScrewdriver = new Item("screwdriver",1);
+
         Room vPrison = new Room("locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ",vDefaultImage);
+        vPrison.addItem(itemBattery);
+        vPrison.addItem(itemScrewdriver);
+
         this.rooms.put("prison",vPrison);
 
         Room vCorridor1 = new Room("now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ",vDefaultImage);
@@ -77,6 +85,7 @@ public class GameEngine {
         vCafeteria.setExit("west", vCorridor2);
 
         vLabo.setExit("down",vCafeteria);
+        vCafeteria.setExit("up", vLabo);
 
         this.currentRoom = vPrison;
     }
@@ -86,7 +95,7 @@ public class GameEngine {
      * If this command ends the game, true is returned, otherwise false is
      * returned.
      */
-    public void interpretCommand(String commandLine) {
+    public void interpretCommand(final String commandLine) {
         gui.println(commandLine);
         Command command = parser.getCommand(commandLine);
 
@@ -115,6 +124,8 @@ public class GameEngine {
             case "look":
                 look(command);
                 break;
+            case "back":
+                goBack(command);
             default:
                 gui.println("I don't know what you mean...");
 
@@ -123,22 +134,27 @@ public class GameEngine {
 
     // implementations of user commands:
 
+    private void goBack(Command command) {
+        currentRoom = lastRoom;
+        gui.println(currentRoom.getLongDescription());
+        if(currentRoom.getImageName() != null)
+            gui.showImage(currentRoom.getImageName());
+    }
     /**
      * Print out some help information.
      * Here we print some stupid, cryptic message and a list of the 
      * command words.
      */
     private void printHelp() {
-        gui.println("You are lost. You are alone. You wander");
-        gui.println("around at Monash Uni, Peninsula Campus." + "\n");
-        gui.print("Your command words are: " + parser.showCommands());
+        gui.println("You are lost. You are alone in the spaceship");
+        gui.print("Your command words are: " + parser.getCommands());
     }
 
     /** 
      * Try to go to one direction. If there is an exit, enter the new
      * room, otherwise print an error message.
      */
-    private void goRoom(Command command) {
+    private void goRoom(final Command command) {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
             gui.println("Go where?");
@@ -153,6 +169,7 @@ public class GameEngine {
         if (nextRoom == null)
             gui.println("There is no door!");
         else {
+            lastRoom = currentRoom;
             currentRoom = nextRoom;
             gui.println(currentRoom.getLongDescription());
             if(currentRoom.getImageName() != null)
@@ -166,24 +183,24 @@ public class GameEngine {
 
     /**
      * Handle the look command
-     * @param pCommand The Command to handle
+     * @param command The Command to handle
      */
-    private void look(final Command pCommand){
+    private void look(final Command command){
         this.printLocationInfo();
     }
 
     /**
      * Handle the eat command
-     * @param pCommand Handle the eat command
+     * @param command Handle the eat command
      */
-    private void eat(final Command pCommand){
+    private void eat(final Command command){
         this.gui.println("You have eaten now and you are not hungry any more.");
     }
 
 
     private void endGame(){
         gui.println("Thank you for playing.  Good bye.");
-        gui.enable(false);
+        gui.setInputEnabled(false);
     }
 
 }
