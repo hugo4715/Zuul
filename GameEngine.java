@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  *  This class is part of the "World of Zuul" application. 
@@ -16,7 +17,7 @@ public class GameEngine {
 
     private Parser parser;
     private Room currentRoom;
-    private Room lastRoom;
+    private Stack<Room> lastRooms;
     private UserInterface gui;
     private Map<String,Room> rooms;
 
@@ -26,6 +27,7 @@ public class GameEngine {
     public GameEngine(){
         this.rooms = new HashMap<>();
         parser = new Parser();
+        this.lastRooms = new Stack<>();
         createRooms();
     }
 
@@ -126,6 +128,7 @@ public class GameEngine {
                 break;
             case "back":
                 goBack(command);
+                break;
             default:
                 gui.println("I don't know what you mean...");
 
@@ -135,10 +138,15 @@ public class GameEngine {
     // implementations of user commands:
 
     private void goBack(Command command) {
-        currentRoom = lastRoom;
-        gui.println(currentRoom.getLongDescription());
-        if(currentRoom.getImageName() != null)
-            gui.showImage(currentRoom.getImageName());
+        if(lastRooms.isEmpty()){
+            gui.println("There is no room to go back to!");
+        }else{
+            currentRoom = lastRooms.pop();
+            gui.println(currentRoom.getLongDescription());
+            if(currentRoom.getImageName() != null)
+                gui.showImage(currentRoom.getImageName());
+        }
+
     }
     /**
      * Print out some help information.
@@ -169,7 +177,7 @@ public class GameEngine {
         if (nextRoom == null)
             gui.println("There is no door!");
         else {
-            lastRoom = currentRoom;
+            lastRooms.push(currentRoom);
             currentRoom = nextRoom;
             gui.println(currentRoom.getLongDescription());
             if(currentRoom.getImageName() != null)
