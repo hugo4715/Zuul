@@ -1,9 +1,24 @@
+cache:
+  paths:
+    - .m2/repository
+
+build:
+  image: maven:3-jdk-8
+  script: mvn clean pakage
+  artifacts:
+    name: "Zuul"
+    paths:
+      - target/*.jar
+
 pages:
+  image: maven:3-jdk-8
   script:
+    - sh doc.sh
     - mkdir .public
-    - cd doc
-    - cp -r * ../.public
-    - cd ..
+    - mkdir .public/progdoc
+    - mkdir .public/userdoc
+    - cp -r progdoc ../.public/progdoc
+    - cp -r userdoc ../.public/userdoc
     - mv .public public
   artifacts:
     paths:
