@@ -15,10 +15,8 @@ pages:
   script:
     - sh doc.sh
     - mkdir .public
-    - mkdir .public/progdoc
-    - mkdir .public/userdoc
-    - cp -r progdoc .public/progdoc
-    - cp -r userdoc .public/userdoc
+    - cp -r progdoc .public/
+    - cp -r userdoc .public/
     - mv .public public
   artifacts:
     paths:
