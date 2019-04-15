@@ -4,11 +4,11 @@ cache:
 
 build:
   image: maven:3-jdk-8
-  script: mvn clean package && mv target/Zuul-*.jar
+  script: mvn clean package && mv target/Zuul-*.jar ./Zuul-latest.jar
   artifacts:
     name: "Zuul"
     paths:
-      - Zuul-*.jar
+      - Zuul-latest.jar
 
 pages:
   image: maven:3-jdk-8
