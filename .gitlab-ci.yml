@@ -4,7 +4,7 @@ cache:
 
 build:
   image: maven:3-jdk-8
-  script: mvn clean pakage
+  script: mvn clean package
   artifacts:
     name: "Zuul"
     paths:
