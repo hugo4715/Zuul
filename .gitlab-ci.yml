@@ -17,8 +17,8 @@ pages:
     - mkdir .public
     - mkdir .public/progdoc
     - mkdir .public/userdoc
-    - cp -r progdoc ../.public/progdoc
-    - cp -r userdoc ../.public/userdoc
+    - cp -r progdoc .public/progdoc
+    - cp -r userdoc .public/userdoc
     - mv .public public
   artifacts:
     paths:
