@@ -1,5 +1,8 @@
 look
 eat
+take
+take MagicCookie
+eat MagicCookie
 go east
 back
 quit

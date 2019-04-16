@@ -58,10 +58,12 @@ public class GameEngine {
 
         Item itemBattery = new Item("Battery", "An old laptop battery", 9);
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
+        Item itemMagicCookie = new Item("MagicCookie", "A cookie in space, eating it might give you superpower", 1);
 
         Room vPrison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", vDefaultImage);
         vPrison.getItems().addItem(itemBattery);
         vPrison.getItems().addItem(itemScrewdriver);
+        vPrison.getItems().addItem(itemMagicCookie);
 
         this.rooms.put("prison", vPrison);
 
@@ -149,14 +151,14 @@ public class GameEngine {
     // implementations of user commands:
 
     private void handleItems() {
-        if(!player.getItems().isEmpty()){
+        if (!player.getItems().isEmpty()) {
             StringBuilder sb = new StringBuilder("You items: ");
             for (Item item : player.getItems().getAllItems()) {
                 sb.append("\n  - ");
                 sb.append(item.getName());
             }
             gui.println(sb.toString());
-        }else{
+        } else {
             gui.println("You don't have any items.");
         }
     }
@@ -197,10 +199,10 @@ public class GameEngine {
             Item chosen = player.getCurrentRoom().getItems().getItem(command.getSecondWord());
 
             if (chosen != null) {
-                if(player.canTake(chosen)){
+                if (player.canTake(chosen)) {
                     player.takeItem(chosen);
                     gui.println("You picked up a " + chosen.getName());
-                }else{
+                } else {
                     gui.println("It's too heavy! You may need to drop some items.");
                 }
 
@@ -299,7 +301,26 @@ public class GameEngine {
      * @param command Handle the handleEat command
      */
     private void handleEat(final Command command) {
-        this.gui.println("You have eaten now and you are not hungry any more.");
+
+        if (command.hasSecondWord()) {
+            Item chosen = player.getItems().getItem(command.getSecondWord());
+
+            if (chosen != null) {
+                switch (chosen.getName()) {
+                    case "MagicCookie":
+                        player.increaseMaxWeight(10);
+                        player.getItems().removeItem(chosen);
+                        gui.println("You ate a Magic Cookie! You are feeling a lot stronger now.");
+                        break;
+                    default:
+                        gui.println("you can't eat " + chosen.getName());
+                }
+            } else {
+                gui.println("You don't have " + command.getSecondWord());
+            }
+        } else {
+            gui.println("What do you want to eat?");
+        }
     }
 
 

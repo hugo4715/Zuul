@@ -64,4 +64,11 @@ public class Player {
         getCurrentRoom().getItems().addItem(chosen);
     }
 
+    public int getMaxWeight() {
+        return maxWeight;
+    }
+
+    public void increaseMaxWeight(int amount) {
+        this.maxWeight += amount;
+    }
 }
