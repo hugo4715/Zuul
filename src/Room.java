@@ -9,7 +9,7 @@ public class Room {
     private String description;
     private HashMap<String, Room> exits;
     private String imageName;
-    private List<Item> items;
+    private ItemList items;
 
     /**
      * Create a new room
@@ -23,7 +23,7 @@ public class Room {
         this.description = description;
         this.exits = new HashMap<>();
         this.imageName = image;
-        this.items = new ArrayList<>();
+        this.items = new ItemList();
     }
 
     public String getName() {
@@ -89,22 +89,15 @@ public class Room {
             msg.append("\nNo item here");
         }else{
             msg.append("\nItems: ");
-            for(int i = 0; i < items.size();i++){
-                Item item = items.get(i);
-                msg.append("\n  [");
-                msg.append(i);
-                msg.append("] ");
+            for(Item item : items.getAllItems()){
+                msg.append("\n  - ");
                 msg.append(item.getLongDescription());
             }
         }
         return msg.toString();
     }
 
-    public void addItem(Item item) {
-        this.items.add(item);
-    }
-
-    public List<Item> getItems() {
+    public ItemList getItems() {
         return items;
     }
 }

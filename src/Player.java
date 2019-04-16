@@ -3,22 +3,18 @@ import java.util.Stack;
 public class Player {
     private Room currentRoom;
     private Stack<Room> lastRooms;
-    private Item item;
+    private ItemList items;
+    private int maxWeight;
+
 
     public Player() {
         this.lastRooms = new Stack<>();
+        this.items = new ItemList();
+        this.maxWeight = 10;
     }
 
     public Room getCurrentRoom() {
         return currentRoom;
-    }
-
-    /**
-     * Get the player item
-     * @return The item, or null if the player doesn't have any item
-     */
-    public Item getItem() {
-        return item;
     }
 
     /**
@@ -38,8 +34,20 @@ public class Player {
         currentRoom = room;
     }
 
-    public void setItem(Item newItem) {
-        this.item = newItem;
+    public ItemList getItems() {
+        return items;
+    }
+
+    /**
+     * Check if the player can take this item
+     * @return True if the player can carryh this item, false if he can't because it's too heavy (he may need to drop some other items)
+     */
+    public boolean canTake(final Item item){
+        return countWeight() + item.getWeight() <= maxWeight;
+    }
+
+    private int countWeight(){
+        return items.getAllItems().stream().mapToInt(Item::getWeight).sum();
     }
 
     /**
@@ -47,7 +55,13 @@ public class Player {
      * @param item
      */
     public void takeItem(final Item item) {
-        setItem(item);
-        getCurrentRoom().getItems().remove(item);
+        items.addItem(item);
+        getCurrentRoom().getItems().removeItem(item);
     }
+
+    public void drop(Item chosen) {
+        items.removeItem(chosen);
+        getCurrentRoom().getItems().addItem(chosen);
+    }
+
 }
