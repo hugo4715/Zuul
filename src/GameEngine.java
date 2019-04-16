@@ -1,40 +1,32 @@
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 
 /**
- *  This class is part of the "World of Zuul" application. 
- *  "World of Zuul" is a very simple, text based adventure game.
- * 
  *  This class creates all rooms, creates the parser and starts
  *  the game.  It also evaluates and executes the commands that 
  *  the parser returns.
- * 
- * @author  Michael Kolling and David J. Barnes
- * @version 1.0 (Jan 2003)
  */
 public class GameEngine {
 
     private Parser parser;
-    private Room currentRoom;
-    private Stack<Room> lastRooms;
     private UserInterface gui;
     private Map<String,Room> rooms;
+    private Player player;
 
     /**
      * Constructor for objects of class GameEngine
      */
     public GameEngine(){
         this.rooms = new HashMap<>();
-        parser = new Parser();
-        this.lastRooms = new Stack<>();
+        this.parser = new Parser();
+        this.player = new Player();
         createRooms();
+
+        player.goRoom(this.rooms.get("prison"));
     }
 
     public void setGUI(UserInterface userInterface){
@@ -47,10 +39,12 @@ public class GameEngine {
      */
     private void printWelcome(){
         gui.print("\n");
-        gui.println("Welcome to the World of Zuul!");
-        gui.println("World of Zuul is a new, incredibly boring adventure game.");
+        gui.println("Welcome to Lost In Space!");
+        gui.println("This is a text-based spatial adventure game");
         gui.println("Type 'help' if you need help.");
         gui.print("\n");
+
+        Room currentRoom = player.getCurrentRoom();
         gui.println(currentRoom.getLongDescription());
         gui.showImage(currentRoom.getImageName());
     }
@@ -62,25 +56,25 @@ public class GameEngine {
         String vDefaultImage = "default.png";
 
 
-        Item itemBattery = new Item("battery",1);
-        Item itemScrewdriver = new Item("screwdriver",1);
+        Item itemBattery = new Item("Battery", "An old laptop battery",1);
+        Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used",1);
 
-        Room vPrison = new Room("locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ",vDefaultImage);
+        Room vPrison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ",vDefaultImage);
         vPrison.addItem(itemBattery);
         vPrison.addItem(itemScrewdriver);
 
         this.rooms.put("prison",vPrison);
 
-        Room vCorridor1 = new Room("now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ",vDefaultImage);
+        Room vCorridor1 = new Room("corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ",vDefaultImage);
         this.rooms.put("corridor1",vCorridor1);
 
-        Room vCorridor2 = new Room("now in another corridor, you can see two closed doors.",vDefaultImage);
+        Room vCorridor2 = new Room("corridor", "now in another corridor, you can see two closed doors.",vDefaultImage);
         this.rooms.put("corridor2",vCorridor2);
 
-        Room vCafeteria = new Room("in inside what look like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.",vDefaultImage);
+        Room vCafeteria = new Room("cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.",vDefaultImage);
         this.rooms.put("cafetaria",vCafeteria);
 
-        Room vLabo = new Room("now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ",vDefaultImage);
+        Room vLabo = new Room("labo", "now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ",vDefaultImage);
         this.rooms.put("labo",vLabo);
 
         vPrison.setExit("east", vCorridor1);
@@ -94,8 +88,6 @@ public class GameEngine {
 
         vLabo.setExit("down",vCafeteria);
         vCafeteria.setExit("up", vLabo);
-
-        this.currentRoom = vPrison;
     }
 
     /**
@@ -117,7 +109,7 @@ public class GameEngine {
                 printHelp();
                 break;
             case "go":
-                goRoom(command);
+                handleGo(command);
                 break;
             case "quit":
                 if(command.hasSecondWord()) {
@@ -127,16 +119,22 @@ public class GameEngine {
                 }
                 break;
             case "eat":
-                eat(command);
+                handleEat(command);
                 break;
             case "look":
-                look(command);
+                handleLook(command);
                 break;
             case "back":
-                goBack(command);
+                handleBack(command);
                 break;
             case "test":
-                test(command);
+                handleTest(command);
+                break;
+            case "take":
+                handleTake(command);
+                break;
+            case "drop":
+                handleDrop(command);
                 break;
             default:
                 gui.println("I don't know what you mean...");
@@ -146,8 +144,65 @@ public class GameEngine {
 
     // implementations of user commands:
 
+    private void handleDrop(final Command command) {
+        if(player.getItem() != null){
+            Item dropped = player.getItem();
+            player.setItem(null);
+            player.getCurrentRoom().addItem(dropped);
+        }else{
+            gui.println("You don't have anything to drop.");
+        }
+    }
 
-    private void test(Command command) {
+    /**
+     * Handle the take command
+     * Command can be either:
+     *   - take <number> (take the n item in the room)
+     *   - take <item name> (take the item with the specified name in the room)
+     */
+    private void handleTake(final Command command) {
+        if(command.hasSecondWord()){
+
+            //the player should not have any item to pick one up
+            if(player.getItem() == null){
+
+                //list al items in the room
+                List<Item> availableItems = player.getCurrentRoom().getItems();
+
+                try {
+                    //try to parse the argument as a number first
+                    int number = Integer.parseInt(command.getSecondWord());
+
+                    if(number >= 0 && number < availableItems.size()){
+                        Item chosen = availableItems.get(number);
+                        player.takeItem(chosen);
+                        gui.println("You picked up a " + chosen.getName());
+                    }else{
+                        gui.println("Invalid item number");
+                    }
+                }catch (NumberFormatException e){
+                    //first argument wasn't a number, check if there is an item with this name
+
+                    Item chosen = availableItems.stream()
+                            .filter(item -> item.getName().equalsIgnoreCase(command.getSecondWord()))
+                            .findAny().orElse(null);
+
+                    if(chosen != null){
+                        player.takeItem(chosen);
+                        gui.println("You picked up a " + chosen.getName());
+                    }else{
+                        gui.println("'" + command.getSecondWord() + "' is not an item number or name!");
+                    }
+                }
+            }else{
+                gui.println("You should drop your item before getting another one.");
+            }
+        }else{
+            gui.println("Take what?");
+        }
+    }
+
+    private void handleTest(final Command command) {
         if(command.hasSecondWord()){
             File file = new File(command.getSecondWord() + ".txt");
 
@@ -167,16 +222,15 @@ public class GameEngine {
         }
     }
 
-    private void goBack(Command command) {
-        if(lastRooms.isEmpty()){
+    private void handleBack(final Command command) {
+        if(!player.goBack()){
             gui.println("There is no room to go back to!");
         }else{
-            currentRoom = lastRooms.pop();
+            Room currentRoom = player.getCurrentRoom();
             gui.println(currentRoom.getLongDescription());
             if(currentRoom.getImageName() != null)
                 gui.showImage(currentRoom.getImageName());
         }
-
     }
     /**
      * Print out some help information.
@@ -192,7 +246,7 @@ public class GameEngine {
      * Try to go to one direction. If there is an exit, enter the new
      * room, otherwise print an error message.
      */
-    private void goRoom(final Command command) {
+    private void handleGo(final Command command) {
         if(!command.hasSecondWord()) {
             // if there is no second word, we don't know where to go...
             gui.println("Go where?");
@@ -201,37 +255,37 @@ public class GameEngine {
 
         String direction = command.getSecondWord();
 
+        Room currentRoom = player.getCurrentRoom();
         // Try to leave current room.
         Room nextRoom = currentRoom.getExit(direction);
 
         if (nextRoom == null)
             gui.println("There is no door!");
         else {
-            lastRooms.push(currentRoom);
-            currentRoom = nextRoom;
-            gui.println(currentRoom.getLongDescription());
-            if(currentRoom.getImageName() != null)
-                gui.showImage(currentRoom.getImageName());
+            player.goRoom(nextRoom);
+            gui.println(nextRoom.getLongDescription());
+            if(nextRoom.getImageName() != null)
+                gui.showImage(nextRoom.getImageName());
         }
     }
 
     private void printLocationInfo(){
-        this.gui.println(this.currentRoom.getLongDescription());
+        this.gui.println(player.getCurrentRoom().getLongDescription());
     }
 
     /**
-     * Handle the look command
+     * Handle the handleLook command
      * @param command The Command to handle
      */
-    private void look(final Command command){
+    private void handleLook(final Command command){
         this.printLocationInfo();
     }
 
     /**
-     * Handle the eat command
-     * @param command Handle the eat command
+     * Handle the handleEat command
+     * @param command Handle the handleEat command
      */
-    private void eat(final Command command){
+    private void handleEat(final Command command){
         this.gui.println("You have eaten now and you are not hungry any more.");
     }
 

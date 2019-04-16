@@ -1,28 +1,33 @@
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class representing a room
  */
 public class Room {
+    private String name;
     private String description;
     private HashMap<String, Room> exits;
     private String imageName;
-    private Set<Item> items;
+    private List<Item> items;
 
     /**
      * Create a new room
      *
+     * @param name
      * @param description The room description
      * @param image The room image
      */
-    public Room(final String description, final String image) {
+    public Room(String name, final String description, final String image) {
+        this.name = name;
         this.description = description;
         this.exits = new HashMap<>();
         this.imageName = image;
-        this.items = new HashSet<>();
+        this.items = new ArrayList<>();
+    }
+
+    public String getName() {
+        return name;
     }
 
     /**
@@ -78,24 +83,28 @@ public class Room {
      * @return The long description of this room (eg. 'You are in [...]. Exits: [...]
      */
     public String getLongDescription() {
-        String msg = "You are " + this.getDescription()
-                + "\n" + this.getExitString();
+        StringBuilder msg = new StringBuilder("You are " + this.getDescription()
+                + "\n" + this.getExitString());
         if(this.items.isEmpty()) {
-            msg += "\nNo item here";
+            msg.append("\nNo item here");
         }else{
-            msg += "\nItems: ";
-            for(Item item : this.items){
-                msg += "\n  - " + item.getDescription();
+            msg.append("\nItems: ");
+            for(int i = 0; i < items.size();i++){
+                Item item = items.get(i);
+                msg.append("\n  [");
+                msg.append(i);
+                msg.append("] ");
+                msg.append(item.getLongDescription());
             }
         }
-        return msg;
+        return msg.toString();
     }
 
     public void addItem(Item item) {
         this.items.add(item);
     }
 
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 }

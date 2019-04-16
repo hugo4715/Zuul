@@ -18,7 +18,7 @@ public class UserInterface implements ActionListener {
     private JLabel image;
 
     private JButton buttonLook;
-    private JButton buttonnEat;
+    private JButton buttonEat;
     private JButton buttonQuit;
 
     /**
@@ -75,11 +75,17 @@ public class UserInterface implements ActionListener {
      * Set up graphical user interface.
      */
     private void createGUI() {
-        this.frame = new JFrame("World of Zuul");
+        Font font = new Font("Comic Sans MS", 0,20);
+
+        this.frame = new JFrame("Lost in space");
+        this.frame.setPreferredSize(new Dimension(800,600));
         this.entryField = new JTextField(34);
+        this.entryField.setFont(font);
 
         this.log = new JTextArea();
         this.log.setEditable(false);
+        this.log.setFont(font);
+        this.log.setLineWrap(true);
         JScrollPane vListScroller = new JScrollPane(this.log);
         vListScroller.setPreferredSize(new Dimension(200, 200));
         vListScroller.setMinimumSize(new Dimension(100, 100));
@@ -87,15 +93,18 @@ public class UserInterface implements ActionListener {
         JPanel vPanel = new JPanel();
         this.image = new JLabel();
 
-
         this.buttonLook = new JButton("Look");
-        this.buttonnEat = new JButton("Eat");
+        this.buttonEat = new JButton("Eat");
         this.buttonQuit = new JButton("Quit");
+
+        this.buttonLook.setFont(font);
+        this.buttonEat.setFont(font);
+        this.buttonQuit.setFont(font);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.PAGE_AXIS));
         buttonPanel.add(this.buttonLook);
-        buttonPanel.add(this.buttonnEat);
+        buttonPanel.add(this.buttonEat);
         buttonPanel.add(this.buttonQuit);
 
         vPanel.setLayout(new BorderLayout());
@@ -116,7 +125,7 @@ public class UserInterface implements ActionListener {
         this.buttonLook.addActionListener(this);
         this.entryField.addActionListener(this);
         this.buttonQuit.addActionListener(this);
-        this.buttonnEat.addActionListener(this);
+        this.buttonEat.addActionListener(this);
 
         this.frame.pack();
         this.frame.setVisible(true);
@@ -132,12 +141,12 @@ public class UserInterface implements ActionListener {
             engine.interpretCommand("quit");
         } else if (event.getSource() == this.entryField) {
             this.processCommand();
+            this.entryField.requestFocus();
         }else if(event.getSource() == this.buttonLook){
             engine.interpretCommand("look");
-        }else if(event.getSource() == this.buttonnEat){
+        }else if(event.getSource() == this.buttonEat){
             engine.interpretCommand("eat");
         }
-
     }
 
     /**
