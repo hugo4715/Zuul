@@ -136,6 +136,10 @@ public class GameEngine {
             case "drop":
                 handleDrop(command);
                 break;
+            case "items":
+                handleItems();
+                break;
+
             default:
                 gui.println("I don't know what you mean...");
 
@@ -143,6 +147,19 @@ public class GameEngine {
     }
 
     // implementations of user commands:
+
+    private void handleItems() {
+        if(!player.getItems().isEmpty()){
+            StringBuilder sb = new StringBuilder("You items: ");
+            for (Item item : player.getItems().getAllItems()) {
+                sb.append("\n  - ");
+                sb.append(item.getName());
+            }
+            gui.println(sb.toString());
+        }else{
+            gui.println("You don't have any items.");
+        }
+    }
 
     private void handleDrop(final Command command) {
 

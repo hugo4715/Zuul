@@ -1,7 +1,7 @@
 
 public class CommandWords {
     private static final String[] validCommands = {
-            "go", "quit", "help", "look", "eat", "back", "test", "take", "drop"
+            "go", "quit", "help", "look", "eat", "back", "test", "take", "drop", "items"
     };
 
     /**
