@@ -16,7 +16,11 @@
 
     <build>
         <sourceDirectory>${project.basedir}/src</sourceDirectory>
-
+        <resources>
+            <resource>
+                <directory>img/</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

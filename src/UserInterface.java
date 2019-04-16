@@ -75,7 +75,7 @@ public class UserInterface implements ActionListener {
         Font font = new Font("Comic Sans MS", 0,20);
 
         this.frame = new JFrame("Lost in space");
-        this.frame.setPreferredSize(new Dimension(800,600));
+        this.frame.setPreferredSize(new Dimension(1000,800));
         this.entryField = new JTextField(34);
         this.entryField.setFont(font);
 

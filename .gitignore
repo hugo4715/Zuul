@@ -4,3 +4,4 @@
 *.bluej
 .idea/
 target/
+out/

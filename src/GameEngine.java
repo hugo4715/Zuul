@@ -53,8 +53,7 @@ public class GameEngine {
      * Create all the rooms and link their exits together.
      */
     private void createRooms() {
-        String vDefaultImage = "default.png";
-
+        String vDefaultImage = "default.jpg";
 
         Item itemBattery = new Item("Battery", "An old laptop battery", 9);
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
