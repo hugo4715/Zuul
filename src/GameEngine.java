@@ -151,8 +151,12 @@ public class GameEngine {
 
     private void handleItems() {
         if (!player.getItems().isEmpty()) {
-            StringBuilder sb = new StringBuilder("You items: ");
+            StringBuilder sb = new StringBuilder("Your items: ");
             sb.append(player.getItems().getMessage());
+            sb.append("\nTotal weight: ");
+            sb.append(player.countWeight());
+            sb.append("/");
+            sb.append(player.getMaxWeight());
             gui.println(sb.toString());
         } else {
             gui.println("You don't have any items.");

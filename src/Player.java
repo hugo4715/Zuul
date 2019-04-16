@@ -46,7 +46,7 @@ public class Player {
         return countWeight() + item.getWeight() <= maxWeight;
     }
 
-    private int countWeight(){
+    public int countWeight(){
         return items.totalWeight();
     }
 
