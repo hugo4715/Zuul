@@ -23,11 +23,21 @@ public class ItemList{
     public void removeItem(final String itemName){
         items.remove(itemName.toLowerCase());
     }
+
     public boolean isEmpty(){
         return items.isEmpty();
     }
 
-    public Collection<Item> getAllItems() {
-        return items.values();
+    public String getMessage() {
+        StringBuilder sb = new StringBuilder();
+        for (Item item : items.values()) {
+            sb.append("\n - ");
+            sb.append(item.getName());
+        }
+        return sb.toString();
+    }
+
+    public int totalWeight(){
+        return items.values().stream().mapToInt(Item::getWeight).sum();
     }
 }

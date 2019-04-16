@@ -1,6 +1,10 @@
 look
 eat
 take
+take screwdriver
+take battery
+drop screwdriver
+drop battery
 take MagicCookie
 eat MagicCookie
 go east

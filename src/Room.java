@@ -89,10 +89,7 @@ public class Room {
             msg.append("\nNo item here");
         }else{
             msg.append("\nItems: ");
-            for(Item item : items.getAllItems()){
-                msg.append("\n  - ");
-                msg.append(item.getLongDescription());
-            }
+            msg.append(items.getMessage());
         }
         return msg.toString();
     }

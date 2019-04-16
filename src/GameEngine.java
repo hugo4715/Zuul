@@ -153,10 +153,7 @@ public class GameEngine {
     private void handleItems() {
         if (!player.getItems().isEmpty()) {
             StringBuilder sb = new StringBuilder("You items: ");
-            for (Item item : player.getItems().getAllItems()) {
-                sb.append("\n  - ");
-                sb.append(item.getName());
-            }
+            sb.append(player.getItems().getMessage());
             gui.println(sb.toString());
         } else {
             gui.println("You don't have any items.");
@@ -178,10 +175,7 @@ public class GameEngine {
                 gui.println("You don't have anything to drop.");
             } else {
                 StringBuilder sb = new StringBuilder("Drop what? ");
-                for (Item item : player.getItems().getAllItems()) {
-                    sb.append("\n - ");
-                    sb.append(item.getName());
-                }
+                sb.append(player.getItems().getMessage());
                 gui.println(sb.toString());
             }
 
@@ -300,7 +294,7 @@ public class GameEngine {
      *
      * @param command Handle the handleEat command
      */
-    private void handleEat(final Command command) {
+    public void handleEat(final Command command) {
 
         if (command.hasSecondWord()) {
             Item chosen = player.getItems().getItem(command.getSecondWord());

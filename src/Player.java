@@ -47,7 +47,7 @@ public class Player {
     }
 
     private int countWeight(){
-        return items.getAllItems().stream().mapToInt(Item::getWeight).sum();
+        return items.totalWeight();
     }
 
     /**
