@@ -18,7 +18,7 @@
         <sourceDirectory>${project.basedir}/src</sourceDirectory>
         <resources>
             <resource>
-                <directory>img/</directory>
+                <directory>.</directory>
             </resource>
         </resources>
         <plugins>
