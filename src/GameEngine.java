@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,6 +15,7 @@ public class GameEngine {
     private UserInterface gui;
     private Map<String, Room> rooms;
     private Player player;
+    private Map<String, ICommandHandler> commands;
 
     /**
      * Constructor for objects of class GameEngine
@@ -25,8 +25,23 @@ public class GameEngine {
         this.parser = new Parser();
         this.player = new Player();
         createRooms();
+        registerCommands();
 
         player.goRoom(this.rooms.get("prison"));
+    }
+
+    private void registerCommands() {
+        commands = new HashMap<>();
+        commands.put("go", this::handleGo);
+        commands.put("help", this::handleHelp);
+        commands.put("back", this::handleBack);
+        commands.put("drop", this::handleDrop);
+        commands.put("eat", this::handleEat);
+        commands.put("look", this::handleLook);
+        commands.put("items", this::handleItems);
+        commands.put("quit", this::handleQuit);
+        commands.put("test", this::handleTest);
+        commands.put("take", this::handleTake);
     }
 
     public void setGUI(UserInterface userInterface) {
@@ -105,51 +120,30 @@ public class GameEngine {
             return;
         }
 
-        switch (command.getCommandWord()) {
-            case "help":
-                printHelp();
-                break;
-            case "go":
-                handleGo(command);
-                break;
-            case "quit":
-                if (command.hasSecondWord()) {
-                    gui.println("Quit what?");
-                } else {
-                    endGame();
-                }
-                break;
-            case "eat":
-                handleEat(command);
-                break;
-            case "look":
-                handleLook(command);
-                break;
-            case "back":
-                handleBack(command);
-                break;
-            case "test":
-                handleTest(command);
-                break;
-            case "take":
-                handleTake(command);
-                break;
-            case "drop":
-                handleDrop(command);
-                break;
-            case "items":
-                handleItems();
-                break;
+        ICommandHandler handler = commands.get(command.getCommandWord().toLowerCase());
 
-            default:
-                gui.println("I don't know what you mean...");
-
+        if (handler != null) {
+            handler.handle(command);
         }
+
     }
 
     // implementations of user commands:
 
-    private void handleItems() {
+    private void handleHelp(Command command) {
+        printHelp();
+    }
+
+    private void handleQuit(Command command) {
+        if (command.hasSecondWord()) {
+            gui.println("Quit what?");
+        } else {
+            gui.println("Thank you for playing.  Good bye.");
+            gui.setInputEnabled(false);
+        }
+    }
+
+    private void handleItems(final Command command) {
         if (!player.getItems().isEmpty()) {
             StringBuilder sb = new StringBuilder("Your items: ");
             sb.append(player.getItems().getMessage());
@@ -303,6 +297,8 @@ public class GameEngine {
             Item chosen = player.getItems().getItem(command.getSecondWord());
 
             if (chosen != null) {
+
+                //i'm using a switch here because we will need to add other eatable items
                 switch (chosen.getName()) {
                     case "MagicCookie":
                         player.increaseMaxWeight(10);
@@ -319,11 +315,4 @@ public class GameEngine {
             gui.println("What do you want to eat?");
         }
     }
-
-
-    private void endGame() {
-        gui.println("Thank you for playing.  Good bye.");
-        gui.setInputEnabled(false);
-    }
-
 }
