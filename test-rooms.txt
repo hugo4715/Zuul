@@ -6,15 +6,18 @@
 #
 
 # This file test item related operations and the back command
-look
-eat
-take
-take screwdriver
-take battery
-drop screwdriver
-drop battery
-take MagicCookie
-eat MagicCookie
 go east
-back
-quit
+go south
+go west
+take screwdriver
+go east
+go down
+go up
+go north
+go north
+go north
+go north
+go south
+go east
+go west
+go west

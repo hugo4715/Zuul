@@ -127,7 +127,7 @@ public class GameEngine implements Serializable {
         Room cockpit = new Room("cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
         this.rooms.put("cockpit",cockpit);
 
-        Room transporter = new TransporterRoom("transporter", "a strange tele-transporter.", defaultImage, this.rooms.values());
+        Room transporter = new TransporterRoom("transporter", "a strange teletransporter.", defaultImage, this.rooms.values());
 
         Door door10 = new Door(transporter, secondaryCorridor);
         secondaryCorridor.setExit("south",door10);
@@ -138,8 +138,8 @@ public class GameEngine implements Serializable {
         secondaryCorridor.setExit("west",door1);
 
         Door door2 = new Door(cafeteria,secondaryCorridor);
-        cafeteria.setExit("up",door1);
-        secondaryCorridor.setExit("down",door1);
+        cafeteria.setExit("up",door2);
+        secondaryCorridor.setExit("down",door2);
 
         Door door3 = new Door(secondaryCorridor,mainCorridor1);
         mainCorridor1.setExit("south", door3);
@@ -155,7 +155,7 @@ public class GameEngine implements Serializable {
 
         Door door6 = new Door(mainCorridor1,mainCorridor2);
         door6.setLocked(true);
-        door6.setKey(itemScrewdriver);//TODO
+        door6.setKey(itemScrewdriver);
         mainCorridor1.setExit("north",door6);
         mainCorridor2.setExit("south",door6);
 
