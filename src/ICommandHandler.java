@@ -1,6 +1,4 @@
-package pkg_game;
-
-import pkg_game.pkg_command.Command;
+import java.io.Serializable;
 
 public interface ICommandHandler  {
     void handle(Command command);

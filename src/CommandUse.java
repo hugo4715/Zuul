@@ -1,9 +1,3 @@
-package pkg_game.pkg_command;
-
-import pkg_game.GameEngine;
-import pkg_game.Item;
-import pkg_game.Player;
-
 public class CommandUse extends Command {
     protected CommandUse(GameEngine engine) {
         super(engine);

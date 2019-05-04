@@ -1,14 +1,6 @@
-package pkg_game.pkg_command;
-
-import pkg_game.GameEngine;
-import pkg_game.Player;
-import pkg_game.pkg_command.Command;
-import pkg_game.pkg_room.Door;
-import pkg_game.pkg_room.Room;
-
 public class CommandGo extends Command {
 
-    protected CommandGo(final GameEngine engine) {
+    protected CommandGo(GameEngine engine) {
         super(engine);
     }
 

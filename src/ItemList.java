@@ -1,5 +1,3 @@
-package pkg_game;
-
 import java.io.Serializable;
 import java.util.*;
 

@@ -1,10 +1,3 @@
-package pkg_game.pkg_command;
-
-import pkg_game.Game;
-import pkg_game.GameEngine;
-import pkg_game.Player;
-import pkg_game.pkg_command.Command;
-
 import java.io.File;
 import java.io.IOException;
 

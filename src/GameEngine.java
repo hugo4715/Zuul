@@ -1,11 +1,7 @@
-package pkg_game;
-
-import pkg_game.pkg_command.Command;
-import pkg_game.pkg_room.Door;
-import pkg_game.pkg_room.Room;
-import pkg_game.pkg_room.TransporterRoom;
-
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -24,10 +20,9 @@ public class GameEngine implements Serializable {
     private transient Map<String, ICommandHandler> commands;
     private int elapsedTime;//the number of minute elapsed
     private boolean isTesting;
-    private Random random;
 
     /**
-     * Constructor for objects of class pkg_game.GameEngine
+     * Constructor for objects of class GameEngine
      */
     public GameEngine() {
         this.isTesting = false;
@@ -36,14 +31,6 @@ public class GameEngine implements Serializable {
         this.parser = new Parser(this);
         registerTimer();
         this.player = new Player(this.rooms.get("prison"));
-    }
-
-    public void setRandomSeed(long seed){
-        random.setSeed(seed);
-    }
-
-    public Random getRandom() {
-        return random;
     }
 
     public UserInterface getGui() {
@@ -137,7 +124,7 @@ public class GameEngine implements Serializable {
         Room cockpit = new Room("cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
         this.rooms.put("cockpit",cockpit);
 
-        Room transporter = new TransporterRoom("transporter", "a strange tele-transporter.", defaultImage, this.rooms.values(), random);
+        Room transporter = new TransporterRoom("transporter", "a strange tele-transporter.", defaultImage, this.rooms.values());
 
         Door door10 = new Door(transporter, secondaryCorridor);
         secondaryCorridor.setExit("south",door10);

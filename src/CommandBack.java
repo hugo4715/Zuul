@@ -1,10 +1,3 @@
-package pkg_game.pkg_command;
-
-import pkg_game.GameEngine;
-import pkg_game.Player;
-import pkg_game.pkg_command.Command;
-import pkg_game.pkg_room.Room;
-
 public class CommandBack extends Command {
     protected CommandBack(GameEngine engine) {
         super(engine);
