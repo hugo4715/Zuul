@@ -32,6 +32,8 @@ public class GameEngine {
 
     private void registerCommands() {
         commands = new HashMap<>();
+
+        //specify handler for each command
         commands.put("go", this::handleGo);
         commands.put("help", this::handleHelp);
         commands.put("back", this::handleBack);
@@ -74,17 +76,17 @@ public class GameEngine {
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
         Item itemMagicCookie = new Item("MagicCookie", "A cookie in space, eating it might give you superpower", 1);
 
-        Room vPrison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", vDefaultImage);
+        Room vPrison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
         vPrison.getItems().addItem(itemBattery);
         vPrison.getItems().addItem(itemScrewdriver);
         vPrison.getItems().addItem(itemMagicCookie);
 
         this.rooms.put("prison", vPrison);
 
-        Room vCorridor1 = new Room("corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", vDefaultImage);
+        Room vCorridor1 = new Room("corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/corridor1.jpg");
         this.rooms.put("corridor1", vCorridor1);
 
-        Room vCorridor2 = new Room("corridor", "now in another corridor, you can see two closed doors.", vDefaultImage);
+        Room vCorridor2 = new Room("corridor", "now in another corridor, you can see two closed doors.", "img/corridor2.jpg");
         this.rooms.put("corridor2", vCorridor2);
 
         Room vCafeteria = new Room("cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.", vDefaultImage);
@@ -117,23 +119,30 @@ public class GameEngine {
 
         if (command.isUnknown()) {
             gui.println("I don't know what you mean...");
-            return;
+        }else{
+            ICommandHandler handler = commands.get(command.getCommandWord().toLowerCase());
+
+            if (handler != null) {
+                handler.handle(command);
+            }
         }
 
-        ICommandHandler handler = commands.get(command.getCommandWord().toLowerCase());
 
-        if (handler != null) {
-            handler.handle(command);
-        }
 
     }
 
     // implementations of user commands:
 
+    /**
+     * Handle the help command
+     */
     private void handleHelp(Command command) {
         printHelp();
     }
 
+    /**
+     * Handle the quit command
+     */
     private void handleQuit(Command command) {
         if (command.hasSecondWord()) {
             gui.println("Quit what?");
@@ -143,6 +152,10 @@ public class GameEngine {
         }
     }
 
+    /**
+     * Handle the items command
+     * This command print the list of items the player currently has
+     */
     private void handleItems(final Command command) {
         if (!player.getItems().isEmpty()) {
             StringBuilder sb = new StringBuilder("Your items: ");
@@ -157,6 +170,11 @@ public class GameEngine {
         }
     }
 
+    /**
+     * Handle the drop command
+     * Commands is:
+     *   - drop <item name>
+     */
     private void handleDrop(final Command command) {
 
         if (command.hasSecondWord()) {
@@ -181,12 +199,13 @@ public class GameEngine {
 
     /**
      * Handle the take command
-     * Command can be either:
-     * - take <number> (take the n item in the room)
+     * Command is:
      * - take <item name> (take the item with the specified name in the room)
      */
     private void handleTake(final Command command) {
         if (command.hasSecondWord()) {
+
+            //search the specified item
             Item chosen = player.getCurrentRoom().getItems().getItem(command.getSecondWord());
 
             if (chosen != null) {
@@ -205,12 +224,19 @@ public class GameEngine {
         }
     }
 
+    /**
+     * Handle the test command
+     * It reads the file specified as the first argument, and execute all the commands one after the other
+     */
     private void handleTest(final Command command) {
         if (command.hasSecondWord()) {
+
+            //search for the specified file
             File file = new File(command.getSecondWord() + ".txt");
 
             if (file.exists()) {
                 try {
+                    //read all lines and execute commands
                     Files.readAllLines(file.toPath()).forEach(this::interpretCommand);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -225,6 +251,9 @@ public class GameEngine {
         }
     }
 
+    /**
+     * Handle the back command
+     */
     private void handleBack(final Command command) {
         if (!player.goBack()) {
             gui.println("There is no room to go back to!");
@@ -238,8 +267,7 @@ public class GameEngine {
 
     /**
      * Print out some help information.
-     * Here we print some stupid, cryptic message and a list of the
-     * command words.
+     * Here we print a list of the available command words.
      */
     private void printHelp() {
         gui.println("You are lost. You are alone in the spaceship");
@@ -247,6 +275,7 @@ public class GameEngine {
     }
 
     /**
+     * Handle the go command
      * Try to go to one direction. If there is an exit, enter the new
      * room, otherwise print an error message.
      */
@@ -273,6 +302,9 @@ public class GameEngine {
         }
     }
 
+    /**
+     * Print the location of the player is the map
+     */
     private void printLocationInfo() {
         this.gui.println(player.getCurrentRoom().getLongDescription());
     }
