@@ -11,6 +11,7 @@ public class Room implements Serializable {
     private HashMap<String, Door> exits;
     private String imageName;
     private ItemList items;
+    private boolean endGame;
 
     /**
      * Create a new room
@@ -27,6 +28,25 @@ public class Room implements Serializable {
         this.items = new ItemList();
     }
 
+    /**
+     * Set if the room should end the game when the player steps in it
+     * You can set that for example for traps or the end rooms
+     * @param endGame True if the room is the end of the game
+     */
+    public void setEndGame(boolean endGame) {
+        this.endGame = endGame;
+    }
+
+    /**
+     * Check if the room is an end game room
+     */
+    public boolean isEndGame() {
+        return endGame;
+    }
+
+    /**
+     * Get the name of the rooms
+     */
     public String getName() {
         return name;
     }
@@ -74,6 +94,9 @@ public class Room implements Serializable {
         return vString.toString();
     }
 
+    /**
+     * Get the image name
+     */
     public String getImageName() {
         return imageName;
     }
@@ -103,6 +126,10 @@ public class Room implements Serializable {
         return items;
     }
 
+    /**
+     * Check if this room can lead to the specified room
+     * @return True if there is a door leading to the specified room
+     */
     public boolean leadsTo(final Room room){
         for(Door door : this.exits.values()){
             if(room.equals(door.getBack()) || room.equals(door.getFront())){

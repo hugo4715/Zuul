@@ -91,13 +91,12 @@ public class GameEngine implements Serializable {
         String defaultImage = "default.jpg";
 
         Item itemBattery = new Item("Battery", "An old laptop battery", 9);
-        Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
         Item itemMagicCookie = new Item("MagicCookie", "A cookie, eating it might give you superpowers", 1);
         Item itemBeamer = new Item("Beamer", "The beamer", 1);
+        Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
 
         Room prison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
         prison.getItems().addItem(itemBattery);
-        prison.getItems().addItem(itemScrewdriver);
         prison.getItems().addItem(itemMagicCookie);
         this.rooms.put("prison", prison);
 
@@ -115,6 +114,7 @@ public class GameEngine implements Serializable {
         this.rooms.put("labo", laboratory);
 
         Room engineRoom = new Room("engine", "now inside the engine room, it's really loud.", defaultImage);
+        engineRoom.getItems().addItem(itemScrewdriver);
         this.rooms.put("engine", engineRoom);
 
         Room mainCorridor2 = new Room("corridor","now inside a corridor.",defaultImage);
@@ -123,7 +123,8 @@ public class GameEngine implements Serializable {
         Room meeting = new Room("meeting","now inside a meeting room with a dozen of seats.",defaultImage);
         this.rooms.put("meeting", meeting);
 
-        Room escapePods = new Room("escape","now inside the escape pods room! You just run to the last pod available. \nYou hear the flames burning the ship down and blast of into space, you're safe. \nYOU WON THE GAME!",defaultImage);
+        Room escapePods = new Room("escape","now inside the escape pods room! \nYou just run to the last pod available. \nYou hear the flames burning the ship down and blast of into space, you're safe. \nYOU WON THE GAME!",defaultImage);
+        escapePods.setEndGame(true);
         this.rooms.put("escape",escapePods);
 
         Room cockpit = new Room("cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
