@@ -24,9 +24,10 @@ public class Parser implements Serializable {
 
     /**
      * Create a new Parser.
+     * @param engine
      */
-    public Parser() {
-        this.commandWords = new CommandWords();
+    public Parser(final GameEngine engine) {
+        this.commandWords = new CommandWords(engine);
     } // Parser()
 
     /**
@@ -34,30 +35,33 @@ public class Parser implements Serializable {
      * parsing the 'inputLine'.
      */
     public Command getCommand(final String inputLine) {
-        String vWord1;
-        String vWord2;
+        String word1;
+        String word2;
 
         StringTokenizer tokenizer = new StringTokenizer(inputLine);
 
         if (tokenizer.hasMoreTokens())
-            vWord1 = tokenizer.nextToken();      // get first word
+            word1 = tokenizer.nextToken();      // get first word
         else
-            vWord1 = null;
+            word1 = null;
 
         if (tokenizer.hasMoreTokens())
-            vWord2 = tokenizer.nextToken();      // get second word
+            word2 = tokenizer.nextToken();      // get second word
         else
-            vWord2 = null;
+            word2 = null;
 
         // note: we just ignore the rest of the input line.
 
         // Now check whether this word is known. If so, create a command
         // with it. If not, create a "null" command (for unknown command).
 
-        if (this.commandWords.isCommand(vWord1))
-            return new Command(vWord1, vWord2);
-        else
-            return new Command(null, vWord2);
+
+        if (this.commandWords.isCommand(word1)) {
+            Command command = this.commandWords.getCommand(word1);
+            command.setSecondWord(word2);
+            return command;
+        }
+        return null;
     }
 
     /**
@@ -67,4 +71,7 @@ public class Parser implements Serializable {
         return this.commandWords.getCommandList();
     }
 
+    public void setGui(final UserInterface userInterface) {
+        commandWords.setGui(userInterface);
+    }
 }

@@ -46,7 +46,6 @@ public class Game{
             gameEngine = (GameEngine) ois.readObject();
             userInterface.setEngine(gameEngine);
             gameEngine.setGUI(userInterface);
-            gameEngine.registerCommands();
         } catch (ClassNotFoundException e) {
             throw new IOException("Invalid game save (it may come from a previous game version and thus cannot be loaded.");
         }

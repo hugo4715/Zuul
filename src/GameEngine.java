@@ -26,13 +26,19 @@ public class GameEngine implements Serializable {
      */
     public GameEngine() {
         this.isTesting = false;
-        this.rooms = new HashMap<>();
-        this.parser = new Parser();
         this.elapsedTime = 0;
         createRooms();
-        this.player = new Player(this.rooms.get("prison"));
-        registerCommands();
+        this.parser = new Parser(this);
         registerTimer();
+        this.player = new Player(this.rooms.get("prison"));
+    }
+
+    public UserInterface getGui() {
+        return gui;
+    }
+
+    public boolean isTesting() {
+        return isTesting;
     }
 
     /**
@@ -46,33 +52,13 @@ public class GameEngine implements Serializable {
         timer.scheduleAtFixedRate(timeLimitTask,minuteMs, minuteMs);
     }
 
-    public void registerCommands() {
-        commands = new HashMap<>();
-
-        //specify handler for each command
-        commands.put("go", this::handleGo);
-        commands.put("help", this::handleHelp);
-        commands.put("back", this::handleBack);
-        commands.put("drop", this::handleDrop);
-        commands.put("eat", this::handleEat);
-        commands.put("look", this::handleLook);
-        commands.put("items", this::handleItems);
-        commands.put("quit", this::handleQuit);
-        commands.put("test", this::handleTest);
-        commands.put("take", this::handleTake);
-        commands.put("save",this::handleSave);
-        commands.put("load", this::handleLoad);
-        commands.put("use",this::handleUse);
-        commands.put("fire",this::handleFire);
-        commands.put("alea", this::handleAlea);
-    }
-
     public Map<String, Room> getRooms() {
         return rooms;
     }
 
     public void setGUI(UserInterface userInterface) {
         gui = userInterface;
+        parser.setGui(userInterface);
         printWelcome();
     }
 
@@ -95,6 +81,7 @@ public class GameEngine implements Serializable {
      * Create all the rooms and link their exits together.
      */
     private void createRooms() {
+        this.rooms = new HashMap<>();
         String defaultImage = "default.jpg";
 
         Item itemBattery = new Item("Battery", "An old laptop battery", 9);
@@ -190,365 +177,34 @@ public class GameEngine implements Serializable {
         gui.println(commandLine);
         Command command = parser.getCommand(commandLine);
 
-        if (command.isUnknown()) {
+        if (command == null) {
             gui.println("I don't know what you mean...");
         }else{
-            ICommandHandler handler = commands.get(command.getCommandWord().toLowerCase());
-
-            if (handler != null) {
-                handler.handle(command);
-            }
+            command.execute(player);
         }
     }
 
-    // implementations of user commands:
-
-    private void handleAlea(Command command){
-        if(isTesting){
-
-            long seed = System.currentTimeMillis();//random value
-            if(command.hasSecondWord()){
-                   try {
-                       seed = Long.parseLong(command.getSecondWord());
-                   }catch (NumberFormatException e){
-                       gui.println(command.getSecondWord() + " is not a number");
-                   }
-            }
-
-            Game.getGame().setRandomSeed(seed);
-            gui.println("Updated seed to " + seed);
-        }else{
-            gui.println("This command can only be used in test files!");
-        }
-    }
-
-    private void handleUse(Command command){
-        if(!command.hasSecondWord()){
-            gui.println("Use what?");
-            return;
-        }
-
-        Item item = player.getItems().getItem(command.getSecondWord());
-        if(item != null){
-
-            //it's a switch so we can add more usable stuff later
-            switch (item.getName()){
-                case "Beamer":
-                    player.setBeamerTarget(player.getCurrentRoom());
-                    gui.println("Your beamer is charged");
-                    break;
-                    default:
-                        gui.println("You can't use " + item.getName());
-            }
-        }else{
-            gui.println("You don't have " + command.getSecondWord());
-        }
-    }
-
-
-    private void handleFire(Command command){
-        if(!command.hasSecondWord()){
-            gui.println("Fire what?");
-            return;
-        }
-
-        Item item = player.getItems().getItem(command.getSecondWord());
-        if(item != null){
-            //it's a switch so we can add more firable stuff later
-            switch (item.getName()){
-                case "Beamer":
-                    Room target = player.getBeamerTarget();
-                    if(target != null){
-                        player.setCurrentRoom(player.getBeamerTarget());
-                        player.setBeamerTarget(null);
-                        gui.println("You just teleported to another room!");
-                        printLocationInfo();
-                    }else{
-                        gui.println("You beamer isn't charged yet");
-                    }
-
-                    break;
-                default:
-                    gui.println("You can't fire " + item.getName());
-            }
-        }else{
-            gui.println("You don't have " + command.getSecondWord());
-        }
-    }
-
-    private void handleLoad(Command command){
-        if(!command.hasSecondWord()){
-            gui.println("Please specify the name of the save.");
-            return;
-        }
-        File file = new File("saves" + File.separator + command.getSecondWord() + ".save");
-        try {
-            Game.getGame().load(file);
-            gui.println("Loaded game successfully!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            gui.println("Could not load file: " + e.getMessage());
-        }
-    }
-
-    private void handleSave(Command command){
-        if(!command.hasSecondWord()){
-            gui.println("Please specify the name of the save.");
-            return;
-        }
-        File file = new File("saves" + File.separator + command.getSecondWord() + ".save");
-        try {
-            Game.getGame().save(file);
-            gui.println("Saved game successfully!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            gui.println("Could not save file: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Handle the help command
-     */
-    private void handleHelp(Command command) {
-        printHelp();
-    }
-
-    /**
-     * Handle the quit command
-     */
-    private void handleQuit(Command command) {
-        if (command.hasSecondWord()) {
-            gui.println("Quit what?");
-        } else {
-            gui.println("Thank you for playing.  Good bye.");
-            gui.setInputEnabled(false);
-        }
-    }
-
-    /**
-     * Handle the items command
-     * This command print the list of items the player currently has
-     */
-    private void handleItems(final Command command) {
-        if (!player.getItems().isEmpty()) {
-            StringBuilder sb = new StringBuilder("Your items: ");
-            sb.append(player.getItems().getMessage());
-            sb.append("\nTotal weight: ");
-            sb.append(player.countWeight());
-            sb.append("/");
-            sb.append(player.getMaxWeight());
-            gui.println(sb.toString());
-        } else {
-            gui.println("You don't have any items.");
-        }
-    }
-
-    /**
-     * Handle the drop command
-     * Commands is:
-     *   - drop <item name>
-     */
-    private void handleDrop(final Command command) {
-
-        if (command.hasSecondWord()) {
-            Item chosen = player.getItems().getItem(command.getSecondWord());
-            if (chosen != null) {
-                player.drop(chosen);
-                gui.println("You dropped " + chosen.getName());
-            } else {
-                gui.println("You don't have " + command.getSecondWord());
-            }
-        } else {
-            if (player.getItems().isEmpty()) {
-                gui.println("You don't have anything to drop.");
-            } else {
-                StringBuilder sb = new StringBuilder("Drop what? ");
-                sb.append(player.getItems().getMessage());
-                gui.println(sb.toString());
-            }
-
-        }
-    }
-
-    /**
-     * Handle the take command
-     * Command is:
-     * - take <item name> (take the item with the specified name in the room)
-     */
-    private void handleTake(final Command command) {
-        if (command.hasSecondWord()) {
-
-            //search the specified item
-            Item chosen = player.getCurrentRoom().getItems().getItem(command.getSecondWord());
-
-            if (chosen != null) {
-                if (player.canTake(chosen)) {
-                    player.takeItem(chosen);
-                    gui.println("You picked up a " + chosen.getName());
-                } else {
-                    gui.println("It's too heavy! You may need to drop some items.");
-                }
-
-            } else {
-                gui.println("'" + command.getSecondWord() + "' is not an item name!");
-            }
-        } else {
-            gui.println("Take what?");
-        }
-    }
-
-    /**
-     * Handle the test command
-     * It reads the file specified as the first argument, and execute all the commands one after the other
-     */
-    private void handleTest(final Command command) {
-        if (command.hasSecondWord()) {
-
-            //search for the specified file
-            File file = new File(command.getSecondWord() + ".txt");
-
-            if (file.exists()) {
-                try {
-                    isTesting = true;
-                    //read all lines and execute commands
-                    Files.readAllLines(file.toPath())
-                            .stream().filter(line -> !line.startsWith("#"))
-                            .forEach(this::interpretCommand);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    gui.println("Could not read " + file.getName() + "!");
-                }
-                isTesting = false;
-            } else {
-                gui.println("Unknown file " + file.getName());
-            }
-
-        } else {
-            gui.println("Please provide a file name!");
-        }
-    }
-
-    /**
-     * Handle the back command
-     */
-    private void handleBack(final Command command) {
-        if (!player.goBack()) {
-            gui.println("You can't go back");
-        } else {
-            Room currentRoom = player.getCurrentRoom();
-            gui.println(currentRoom.getLongDescription());
-            if (currentRoom.getImageName() != null)
-                gui.showImage(currentRoom.getImageName());
-        }
+    public void setTesting(boolean testing) {
+        isTesting = testing;
     }
 
     /**
      * Print out some help information.
      * Here we print a list of the available command words.
      */
-    private void printHelp() {
+    public void printHelp() {
         gui.println("You are lost. You are alone in the spaceship");
         gui.print("Your command words are: " + parser.getCommands());
     }
 
     /**
-     * Handle the go command
-     * Try to go to one direction. If there is an exit, enter the new
-     * room, otherwise print an error message.
-     */
-    private void handleGo(final Command command) {
-        if (!command.hasSecondWord()) {
-            // if there is no second word, we don't know where to go...
-            gui.println("Go where?");
-            return;
-        }
-
-        String direction = command.getSecondWord();
-
-        Room currentRoom = player.getCurrentRoom();
-        // Try to leave current room.
-        Door door = currentRoom.getExit(direction);
-
-        if (door == null)
-            gui.println("There is no door!");
-        else {
-
-            if(door.isLocked()){
-                if(door.getKey() == null){
-                    gui.println("This door is locked.");
-                }else{
-                    if(player.getItems().contains(door.getKey())){
-                        door.setLocked(false);
-                        gui.println("You unlocked the door using " + door.getKey().getName());
-                    }else{
-                        gui.println("This door is locked, you need '" + door.getKey().getName() +"' to open it.");
-                    }
-                }
-                return;
-            }
-
-            //get the room at the other side of this door
-            Room nextRoom = door.getOtherSide(player.getCurrentRoom());
-
-            if(nextRoom == null){
-                gui.println("This door cannot be openned from this side!");
-                return;
-            }
-
-            player.goRoom(nextRoom);
-            gui.println(nextRoom.getLongDescription());
-
-            if (nextRoom.getImageName() != null) {
-                gui.showImage(nextRoom.getImageName());
-            }
-        }
-    }
-
-    /**
      * Print the location of the player is the map
      */
-    private void printLocationInfo() {
+    public void printLocationInfo() {
         this.gui.println(player.getCurrentRoom().getLongDescription());
     }
 
-    /**
-     * Handle the handleLook command
-     *
-     * @param command The Command to handle
-     */
-    private void handleLook(final Command command) {
-        this.printLocationInfo();
-    }
 
-    /**
-     * Handle the handleEat command
-     *
-     * @param command Handle the handleEat command
-     */
-    public void handleEat(final Command command) {
-
-        if (command.hasSecondWord()) {
-            Item chosen = player.getItems().getItem(command.getSecondWord());
-
-            if (chosen != null) {
-
-                //i'm using a switch here because we will need to add other eatable items
-                switch (chosen.getName()) {
-                    case "MagicCookie":
-                        player.increaseMaxWeight(10);
-                        player.getItems().removeItem(chosen);
-                        gui.println("You ate a Magic Cookie! You are feeling a lot stronger now.");
-                        break;
-                    default:
-                        gui.println("you can't eat " + chosen.getName());
-                }
-            } else {
-                gui.println("You don't have " + command.getSecondWord());
-            }
-        } else {
-            gui.println("What do you want to eat?");
-        }
-    }
 
     private class TimeLimitTask extends TimerTask{
         @Override

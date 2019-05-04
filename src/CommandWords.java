@@ -1,9 +1,37 @@
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommandWords implements Serializable {
     private static final String[] validCommands = {
             "go", "quit", "help", "look", "eat", "back", "test", "take", "drop", "items", "save", "load", "use","fire", "alea"
     };
+
+    private Map<String,Command> commands;
+
+    public CommandWords(final GameEngine engine) {
+        this.commands = new HashMap<>();
+
+        commands.put("go", new CommandGo(engine));
+        commands.put("alea",new CommandAlea(engine));
+        commands.put("back", new CommandBack(engine));
+        commands.put("drop", new CommandDrop(engine));
+        commands.put("eat", new CommandEat(engine));
+        commands.put("fire", new CommandFire(engine));
+        commands.put("help", new CommandHelp(engine));
+        commands.put("items", new CommandItems(engine));
+        commands.put("load", new CommandLoad(engine));
+        commands.put("look", new CommandLook(engine));
+        commands.put("quit", new CommandQuit(engine));
+        commands.put("save", new CommandSave(engine));
+        commands.put("take", new CommandTake(engine));
+        commands.put("test", new CommandTest(engine));
+        commands.put("use", new CommandUse(engine));
+    }
+
+    public void setGui(final UserInterface userInterface){
+        commands.values().forEach(cmd -> cmd.setGui(userInterface));
+    }
 
     /**
      * Get all the available commands
@@ -12,7 +40,7 @@ public class CommandWords implements Serializable {
      */
     public String getCommandList() {
         StringBuilder msg = new StringBuilder();
-        for (String vCmd : validCommands) {
+        for (String vCmd : commands.keySet()) {
             msg.append(vCmd);
             msg.append(' ');
         }
@@ -27,11 +55,11 @@ public class CommandWords implements Serializable {
      * @return true si pString est une comande valide, false sinon
      */
     public boolean isCommand(final String command) {
-        for (int i = 0; i < validCommands.length; i++) {
-            if (validCommands[i].equals(command)) {
-                return true;
-            }
-        }
-        return false;
+        return commands.containsKey(command);
+    }
+
+
+    public Command getCommand(String vWord1) {
+        return commands.get(vWord1);
     }
 }

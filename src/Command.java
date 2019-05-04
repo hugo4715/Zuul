@@ -2,28 +2,22 @@
 /**
  * A class representing a command
  */
-public class Command {
-    private String commandWord;
+public abstract class Command {
+    protected final GameEngine engine;
+    protected UserInterface gui;
+
     private String secondWord;
 
-    /**
-     * Create a new command
-     *
-     * @param commandWord The first command word
-     * @param secondWord  The second command word
-     */
-    public Command(final String commandWord, final String secondWord) {
-        this.commandWord = commandWord;
-        this.secondWord = secondWord;
+    protected Command(GameEngine engine) {
+        this.engine = engine;
     }
 
-    /**
-     * Get the first command word
-     *
-     * @return The first Command word
-     */
-    public String getCommandWord() {
-        return this.commandWord;
+    public void setGui(UserInterface gui) {
+        this.gui = gui;
+    }
+
+    public void setSecondWord(String secondWord) {
+        this.secondWord = secondWord;
     }
 
     /**
@@ -44,12 +38,5 @@ public class Command {
         return this.secondWord != null;
     }
 
-    /**
-     * Get if the command is unknown
-     *
-     * @return true if the command is unknown (no first word)
-     */
-    public boolean isUnknown() {
-        return this.commandWord == null;
-    }
+    public abstract void execute(final Player player);
 }
