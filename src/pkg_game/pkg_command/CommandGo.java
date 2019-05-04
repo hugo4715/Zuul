@@ -52,6 +52,7 @@ public class CommandGo extends Command {
             }
 
             player.goRoom(nextRoom);
+            engine.tickEntities();
             engine.printLocationInfo();
 
             if (nextRoom.getImageName() != null) {

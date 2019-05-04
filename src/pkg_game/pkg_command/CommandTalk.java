@@ -1,7 +1,7 @@
 package pkg_game.pkg_command;
 
-import pkg_game.Entity;
-import pkg_game.EntityTalkable;
+import pkg_game.pkg_entity.Entity;
+import pkg_game.pkg_entity.EntityTalkable;
 import pkg_game.GameEngine;
 import pkg_game.Player;
 

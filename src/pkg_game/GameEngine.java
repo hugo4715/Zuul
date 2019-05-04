@@ -1,6 +1,10 @@
 package pkg_game;
 
 import pkg_game.pkg_command.Command;
+import pkg_game.pkg_entity.Entity;
+import pkg_game.pkg_entity.EntityMoving;
+import pkg_game.pkg_entity.EntityTalkable;
+import pkg_game.pkg_entity.Frog;
 import pkg_game.pkg_room.Door;
 import pkg_game.pkg_room.Room;
 import pkg_game.pkg_room.TransporterRoom;
@@ -178,6 +182,20 @@ public class GameEngine implements Serializable {
 
     public Set<Entity> getEntities() {
         return entities;
+    }
+
+    /**
+     * Make all the entities move
+     */
+    public void tickEntities(){
+        for(Entity entity : entities){
+            if(entity instanceof EntityMoving){
+                EntityMoving entityMoving = (EntityMoving) entity;
+                if(Game.getGame().getRandom().nextDouble() < entityMoving.moveChance()) {
+                    ((EntityMoving)entity).move();
+                }
+            }
+        }
     }
 
     /**

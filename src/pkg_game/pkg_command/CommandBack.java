@@ -15,6 +15,7 @@ public class CommandBack extends Command {
             gui.println("You can't go back");
         } else {
             Room currentRoom = player.getCurrentRoom();
+            engine.tickEntities();
             gui.println(currentRoom.getLongDescription());
             if (currentRoom.getImageName() != null)
                 gui.showImage(currentRoom.getImageName());

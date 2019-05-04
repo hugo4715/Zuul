@@ -1,5 +1,6 @@
 package pkg_game.pkg_room;
 
+import pkg_game.Game;
 import pkg_game.ItemList;
 
 import java.io.Serializable;
@@ -142,4 +143,13 @@ public class Room implements Serializable {
         return false;
     }
 
+    /**
+     * Get a random exit of this room
+     */
+    public Door getRandomExit() {
+        return exits.values().stream()
+                .skip(Game.getGame().getRandom().nextInt(exits.size()))
+                .findAny()
+                .orElse(null);
+    }
 }
