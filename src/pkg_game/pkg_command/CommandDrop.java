@@ -1,3 +1,9 @@
+package pkg_game.pkg_command;
+
+import pkg_game.GameEngine;
+import pkg_game.Item;
+import pkg_game.Player;
+
 public class CommandDrop extends Command {
     protected CommandDrop(GameEngine engine) {
         super(engine);

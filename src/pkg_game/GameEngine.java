@@ -1,7 +1,11 @@
-import java.io.File;
-import java.io.IOException;
+package pkg_game;
+
+import pkg_game.pkg_command.Command;
+import pkg_game.pkg_room.Door;
+import pkg_game.pkg_room.Room;
+import pkg_game.pkg_room.TransporterRoom;
+
 import java.io.Serializable;
-import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -17,12 +21,11 @@ public class GameEngine implements Serializable {
     private transient UserInterface gui;
     private Map<String, Room> rooms;
     private Player player;
-    private transient Map<String, ICommandHandler> commands;
     private int elapsedTime;//the number of minute elapsed
     private boolean isTesting;
 
     /**
-     * Constructor for objects of class GameEngine
+     * Constructor for objects of class pkg_game.GameEngine
      */
     public GameEngine() {
         this.isTesting = false;
@@ -203,8 +206,6 @@ public class GameEngine implements Serializable {
     public void printLocationInfo() {
         this.gui.println(player.getCurrentRoom().getLongDescription());
     }
-
-
 
     private class TimeLimitTask extends TimerTask{
         @Override

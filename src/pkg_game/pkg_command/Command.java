@@ -1,10 +1,17 @@
+package pkg_game.pkg_command;
+
+import pkg_game.GameEngine;
+import pkg_game.Player;
+import pkg_game.UserInterface;
+
+import java.io.Serializable;
 
 /**
  * A class representing a command
  */
-public abstract class Command {
+public abstract class Command implements Serializable {
     protected final GameEngine engine;
-    protected UserInterface gui;
+    protected transient UserInterface gui;
 
     private String secondWord;
 
@@ -23,7 +30,7 @@ public abstract class Command {
     /**
      * Get the second command word
      *
-     * @return The second Command word
+     * @return The second pkg_game.pkg_command.Command word
      */
     public String getSecondWord() {
         return this.secondWord;

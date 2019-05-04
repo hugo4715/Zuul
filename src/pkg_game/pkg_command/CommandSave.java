@@ -1,8 +1,14 @@
+package pkg_game.pkg_command;
+
+import pkg_game.Game;
+import pkg_game.GameEngine;
+import pkg_game.Player;
+
 import java.io.File;
 import java.io.IOException;
 
-public class CommandLoad extends Command {
-    protected CommandLoad(GameEngine engine) {
+public class CommandSave extends Command {
+    protected CommandSave(GameEngine engine) {
         super(engine);
     }
 
@@ -14,11 +20,11 @@ public class CommandLoad extends Command {
         }
         File file = new File("saves" + File.separator + getSecondWord() + ".save");
         try {
-            Game.getGame().load(file);
-            gui.println("Loaded game successfully!");
+            Game.getGame().save(file);
+            gui.println("Saved game successfully!");
         } catch (IOException e) {
             e.printStackTrace();
-            gui.println("Could not load file: " + e.getMessage());
+            gui.println("Could not save file: " + e.getMessage());
         }
     }
 }

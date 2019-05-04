@@ -1,3 +1,5 @@
+package pkg_game;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.Random;

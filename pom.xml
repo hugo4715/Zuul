@@ -38,7 +38,7 @@
                     <transformers>
                         <transformer
                                 implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <mainClass>Game</mainClass>
+                            <mainClass>pkg_game.Game</mainClass>
                         </transformer>
                     </transformers>
                 </configuration>

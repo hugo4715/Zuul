@@ -1,3 +1,7 @@
+package pkg_game.pkg_room;
+
+import pkg_game.Item;
+
 import java.io.Serializable;
 
 public class Door implements Serializable {
@@ -46,4 +50,5 @@ public class Door implements Serializable {
         if(from.equals(back))return front;
         return null;
     }
+
 }

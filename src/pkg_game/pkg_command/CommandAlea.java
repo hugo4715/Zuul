@@ -1,3 +1,9 @@
+package pkg_game.pkg_command;
+
+import pkg_game.Game;
+import pkg_game.GameEngine;
+import pkg_game.Player;
+
 public class CommandAlea extends Command {
     protected CommandAlea(GameEngine engine) {
         super(engine);
