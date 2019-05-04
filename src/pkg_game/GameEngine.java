@@ -8,6 +8,7 @@ import pkg_game.pkg_room.TransporterRoom;
 import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * This class creates all rooms, creates the parser and starts
@@ -23,6 +24,7 @@ public class GameEngine implements Serializable {
     private Player player;
     private int elapsedTime;//the number of minute elapsed
     private boolean isTesting;
+    private Set<Entity> entities;
 
     /**
      * Constructor for objects of class pkg_game.GameEngine
@@ -34,6 +36,9 @@ public class GameEngine implements Serializable {
         this.parser = new Parser(this);
         registerTimer();
         this.player = new Player(this.rooms.get("prison"));
+
+        this.entities = new HashSet<>();
+        this.entities.add(new Frog(this.rooms.get("corridor1"),"Frog", "Hello i'm a frog"));
     }
 
     public UserInterface getGui() {
@@ -76,7 +81,7 @@ public class GameEngine implements Serializable {
         gui.print("\n");
 
         Room currentRoom = player.getCurrentRoom();
-        gui.println(currentRoom.getLongDescription());
+        printLocationInfo();
         gui.showImage(currentRoom.getImageName());
     }
 
@@ -171,6 +176,10 @@ public class GameEngine implements Serializable {
         mainCorridor2.setExit("east",door9);
     }
 
+    public Set<Entity> getEntities() {
+        return entities;
+    }
+
     /**
      * Given a command, process (that is: execute) the command.
      * If this command ends the game, true is returned, otherwise false is
@@ -205,6 +214,21 @@ public class GameEngine implements Serializable {
      */
     public void printLocationInfo() {
         this.gui.println(player.getCurrentRoom().getLongDescription());
+
+        List<Entity> talkableEntities = entities.stream()
+                .filter(entity -> entity.getRoom().equals(player.getCurrentRoom()))
+                .filter(entity -> entity instanceof EntityTalkable)
+                .collect(Collectors.toList());
+
+        if(!talkableEntities.isEmpty()){
+            StringBuilder sb = new StringBuilder("You can talk to ");
+            for(int i = 0; i < talkableEntities.size();i++){
+                sb.append(talkableEntities.get(i).getName());
+                if(i != talkableEntities.size()-1)sb.append(",");
+            }
+            gui.println(sb.toString());
+        }
+
     }
 
     private class TimeLimitTask extends TimerTask{

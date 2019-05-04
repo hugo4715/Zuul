@@ -28,6 +28,7 @@ public class CommandWords implements Serializable {
         commands.put("take", new CommandTake(engine));
         commands.put("test", new CommandTest(engine));
         commands.put("use", new CommandUse(engine));
+        commands.put("talk", new CommandTalk(engine));
     }
 
     public void setGui(final UserInterface userInterface){

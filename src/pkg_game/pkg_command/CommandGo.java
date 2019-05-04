@@ -52,7 +52,7 @@ public class CommandGo extends Command {
             }
 
             player.goRoom(nextRoom);
-            gui.println(nextRoom.getLongDescription());
+            engine.printLocationInfo();
 
             if (nextRoom.getImageName() != null) {
                 gui.showImage(nextRoom.getImageName());
