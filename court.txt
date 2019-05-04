@@ -1,3 +1,11 @@
+#
+#         Lost in space
+#           Test File
+#
+# Lines prefixed with # are comments
+#
+
+# This file test item related operations and the back command
 look
 eat
 take

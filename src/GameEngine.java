@@ -19,11 +19,13 @@ public class GameEngine implements Serializable {
     private Player player;
     private transient Map<String, ICommandHandler> commands;
     private int elapsedTime;//the number of minute elapsed
+    private boolean isTesting;
 
     /**
      * Constructor for objects of class GameEngine
      */
     public GameEngine() {
+        this.isTesting = false;
         this.rooms = new HashMap<>();
         this.parser = new Parser();
         this.elapsedTime = 0;
@@ -62,6 +64,11 @@ public class GameEngine implements Serializable {
         commands.put("load", this::handleLoad);
         commands.put("use",this::handleUse);
         commands.put("fire",this::handleFire);
+        commands.put("alea", this::handleAlea);
+    }
+
+    public Map<String, Room> getRooms() {
+        return rooms;
     }
 
     public void setGUI(UserInterface userInterface) {
@@ -130,6 +137,12 @@ public class GameEngine implements Serializable {
         Room cockpit = new Room("cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
         this.rooms.put("cockpit",cockpit);
 
+        Room transporter = new TransporterRoom("transporter", "a strange tele-transporter.", defaultImage, this.rooms.values());
+
+        Door door10 = new Door(transporter, secondaryCorridor);
+        secondaryCorridor.setExit("south",door10);
+        transporter.setExit("north", door10);
+
         Door door1 = new Door(engineRoom,secondaryCorridor);
         engineRoom.setExit("east",door1);
         secondaryCorridor.setExit("west",door1);
@@ -189,6 +202,25 @@ public class GameEngine implements Serializable {
     }
 
     // implementations of user commands:
+
+    private void handleAlea(Command command){
+        if(isTesting){
+
+            long seed = System.currentTimeMillis();//random value
+            if(command.hasSecondWord()){
+                   try {
+                       seed = Long.parseLong(command.getSecondWord());
+                   }catch (NumberFormatException e){
+                       gui.println(command.getSecondWord() + " is not a number");
+                   }
+            }
+
+            Game.getGame().setRandomSeed(seed);
+            gui.println("Updated seed to " + seed);
+        }else{
+            gui.println("This command can only be used in test files!");
+        }
+    }
 
     private void handleUse(Command command){
         if(!command.hasSecondWord()){
@@ -377,12 +409,16 @@ public class GameEngine implements Serializable {
 
             if (file.exists()) {
                 try {
+                    isTesting = true;
                     //read all lines and execute commands
-                    Files.readAllLines(file.toPath()).forEach(this::interpretCommand);
+                    Files.readAllLines(file.toPath())
+                            .stream().filter(line -> !line.startsWith("#"))
+                            .forEach(this::interpretCommand);
                 } catch (IOException e) {
                     e.printStackTrace();
                     gui.println("Could not read " + file.getName() + "!");
                 }
+                isTesting = false;
             } else {
                 gui.println("Unknown file " + file.getName());
             }

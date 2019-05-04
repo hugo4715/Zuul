@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * A class with all the logic to make our game run
@@ -10,14 +11,24 @@ public class Game{
 
     private UserInterface userInterface;
     private GameEngine gameEngine;
+    private Random random;
 
     /**
      * Create and initialize a new game
      */
     public Game() {
+        this.random = new Random();
         this.gameEngine = new GameEngine();
         this.userInterface = new UserInterface(gameEngine);
         gameEngine.setGUI(userInterface);
+    }
+
+    public void setRandomSeed(long seed){
+        random.setSeed(seed);
+    }
+
+    public Random getRandom() {
+        return random;
     }
 
     /**
