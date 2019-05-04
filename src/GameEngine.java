@@ -1,39 +1,50 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class creates all rooms, creates the parser and starts
  * the game.  It also evaluates and executes the commands that
  * the parser returns.
  */
-public class GameEngine {
-    private static final int TIME_LIMIT = 20;//the number of steps the player has before the game is over
+public class GameEngine implements Serializable {
+    private static final int TIME_LIMIT = 20;//the number of minutes the player has before the game is over
 
     private Parser parser;
-    private UserInterface gui;
+    private transient UserInterface gui;
     private Map<String, Room> rooms;
     private Player player;
-    private Map<String, ICommandHandler> commands;
+    private transient Map<String, ICommandHandler> commands;
+    private int elapsedTime;//the number of minute elapsed
 
-    private int elapsedTime;
     /**
      * Constructor for objects of class GameEngine
      */
     public GameEngine() {
         this.rooms = new HashMap<>();
         this.parser = new Parser();
-        this.player = new Player();
         this.elapsedTime = 0;
         createRooms();
+        this.player = new Player(this.rooms.get("prison"));
         registerCommands();
-
-        player.goRoom(this.rooms.get("prison"));
+        registerTimer();
     }
 
-    private void registerCommands() {
+    /**
+     * Schedule the timer task to count the time left
+     */
+    private void registerTimer() {
+        Timer timer = new Timer();
+        TimeLimitTask timeLimitTask = new TimeLimitTask();
+
+        long minuteMs = TimeUnit.MINUTES.toMillis(1);
+        timer.scheduleAtFixedRate(timeLimitTask,minuteMs, minuteMs);
+    }
+
+    public void registerCommands() {
         commands = new HashMap<>();
 
         //specify handler for each command
@@ -47,6 +58,8 @@ public class GameEngine {
         commands.put("quit", this::handleQuit);
         commands.put("test", this::handleTest);
         commands.put("take", this::handleTake);
+        commands.put("save",this::handleSave);
+        commands.put("load", this::handleLoad);
     }
 
     public void setGUI(UserInterface userInterface) {
@@ -157,12 +170,39 @@ public class GameEngine {
                 handler.handle(command);
             }
         }
-
-
-
     }
 
     // implementations of user commands:
+
+    private void handleLoad(Command command){
+        if(!command.hasSecondWord()){
+            gui.println("Please specify the name of the save.");
+            return;
+        }
+        File file = new File("saves" + File.separator + command.getSecondWord() + ".save");
+        try {
+            Game.getGame().load(file);
+            gui.println("Loaded game successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            gui.println("Could not load file: " + e.getMessage());
+        }
+    }
+
+    private void handleSave(Command command){
+        if(!command.hasSecondWord()){
+            gui.println("Please specify the name of the save.");
+            return;
+        }
+        File file = new File("saves" + File.separator + command.getSecondWord() + ".save");
+        try {
+            Game.getGame().save(file);
+            gui.println("Saved game successfully!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            gui.println("Could not save file: " + e.getMessage());
+        }
+    }
 
     /**
      * Handle the help command
@@ -327,16 +367,6 @@ public class GameEngine {
             gui.println("There is no door!");
         else {
             player.goRoom(nextRoom);
-
-            if(elapsedTime == TIME_LIMIT-1){
-                gui.println("You were too slow! \nThe ship just exploded, but you were still inside... GAME OVER");
-                gui.setInputEnabled(false);
-                return;
-            }
-
-            elapsedTime++;
-            gui.println("You have " + (TIME_LIMIT-elapsedTime) + " moves left.");
-
             gui.println(nextRoom.getLongDescription());
 
             if (nextRoom.getImageName() != null) {
@@ -388,6 +418,20 @@ public class GameEngine {
             }
         } else {
             gui.println("What do you want to eat?");
+        }
+    }
+
+    private class TimeLimitTask extends TimerTask{
+        @Override
+        public void run() {
+            elapsedTime++;
+            gui.println("You have " + (TIME_LIMIT-elapsedTime) + " minutes left.");
+
+            if(elapsedTime > TIME_LIMIT){
+                gui.println("You were too slow! \nThe ship just exploded, but you were still inside... GAME OVER");
+                gui.setInputEnabled(false);
+                this.cancel();
+            }
         }
     }
 }

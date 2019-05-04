@@ -1,10 +1,11 @@
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * A class representing a room
  */
-public class Room {
+public class Room implements Serializable {
     private String name;
     private String description;
     private HashMap<String, Room> exits;

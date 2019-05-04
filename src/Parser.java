@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.StringTokenizer;
 
 /*
@@ -17,7 +18,7 @@ import java.util.StringTokenizer;
  * @version 2.0 (Jan 2003)
  */
 
-public class Parser {
+public class Parser implements Serializable {
 
     private CommandWords commandWords;  // holds all valid command words
 

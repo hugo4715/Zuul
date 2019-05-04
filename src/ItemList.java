@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 
-public class ItemList{
+public class ItemList implements Serializable {
 
     private Map<String,Item> items;
 

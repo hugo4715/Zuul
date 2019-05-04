@@ -1,16 +1,18 @@
+import java.io.Serializable;
 import java.util.Stack;
 
-public class Player {
+public class Player implements Serializable {
     private Room currentRoom;
     private Stack<Room> lastRooms;
     private ItemList items;
     private int maxWeight;
 
 
-    public Player() {
+    public Player(Room room) {
         this.lastRooms = new Stack<>();
         this.items = new ItemList();
         this.maxWeight = 10;
+        this.currentRoom = room;
     }
 
     public Room getCurrentRoom() {
@@ -22,7 +24,7 @@ public class Player {
      * @return True if the player went back to another room, false if there was no room to get back to
      */
     public boolean goBack() {
-        if(!lastRooms.isEmpty()){
+        if(!lastRooms.empty()){
             currentRoom = lastRooms.pop();
             return true;
         }

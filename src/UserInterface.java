@@ -32,6 +32,10 @@ public class UserInterface implements ActionListener {
         this.createGUI();
     }
 
+    public void setEngine(GameEngine engine) {
+        this.engine = engine;
+    }
+
     /**
      * Print out some text into the text area.
      */
@@ -159,5 +163,9 @@ public class UserInterface implements ActionListener {
         this.entryField.setText("");
 
         this.engine.interpretCommand(vInput);
+    }
+
+    public void clearText() {
+        this.log.setText("");
     }
 }

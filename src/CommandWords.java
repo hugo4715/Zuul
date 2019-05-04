@@ -1,7 +1,8 @@
+import java.io.Serializable;
 
-public class CommandWords {
+public class CommandWords implements Serializable {
     private static final String[] validCommands = {
-            "go", "quit", "help", "look", "eat", "back", "test", "take", "drop", "items"
+            "go", "quit", "help", "look", "eat", "back", "test", "take", "drop", "items", "save", "load"
     };
 
     /**
