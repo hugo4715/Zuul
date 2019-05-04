@@ -1,0 +1,21 @@
+look
+take magiccookie
+eat magiccookie
+take battery
+go east
+go north
+go north
+go south
+go east
+go west
+go west
+take screwdriver
+go east
+go north
+go north
+go north
+go north
+go south
+go east
+go west
+go west
