@@ -10,6 +10,7 @@ import java.util.Map;
  * the parser returns.
  */
 public class GameEngine {
+    private static final int TIME_LIMIT = 20;//the number of steps the player has before the game is over
 
     private Parser parser;
     private UserInterface gui;
@@ -17,6 +18,7 @@ public class GameEngine {
     private Player player;
     private Map<String, ICommandHandler> commands;
 
+    private int elapsedTime;
     /**
      * Constructor for objects of class GameEngine
      */
@@ -24,6 +26,7 @@ public class GameEngine {
         this.rooms = new HashMap<>();
         this.parser = new Parser();
         this.player = new Player();
+        this.elapsedTime = 0;
         createRooms();
         registerCommands();
 
@@ -324,9 +327,21 @@ public class GameEngine {
             gui.println("There is no door!");
         else {
             player.goRoom(nextRoom);
+
+            if(elapsedTime == TIME_LIMIT-1){
+                gui.println("You were too slow! \nThe ship just exploded, but you were still inside... GAME OVER");
+                gui.setInputEnabled(false);
+                return;
+            }
+
+            elapsedTime++;
+            gui.println("You have " + (TIME_LIMIT-elapsedTime) + " moves left.");
+
             gui.println(nextRoom.getLongDescription());
-            if (nextRoom.getImageName() != null)
+
+            if (nextRoom.getImageName() != null) {
                 gui.showImage(nextRoom.getImageName());
+            }
         }
     }
 

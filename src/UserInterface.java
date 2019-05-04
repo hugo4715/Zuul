@@ -17,6 +17,7 @@ public class UserInterface implements ActionListener {
     private JButton buttonLook;
     private JButton buttonEat;
     private JButton buttonQuit;
+    private boolean inputEnabled;
 
     /**
      * Construct a UserInterface. As a parameter, a Game Engine
@@ -27,6 +28,7 @@ public class UserInterface implements ActionListener {
      */
     public UserInterface(final GameEngine gameEngine) {
         this.engine = gameEngine;
+        this.inputEnabled = true;
         this.createGUI();
     }
 
@@ -63,6 +65,7 @@ public class UserInterface implements ActionListener {
      * Enable or disable input in the input field.
      */
     public void setInputEnabled(final boolean enabled) {
+        this.inputEnabled = enabled;
         this.entryField.setEditable(enabled);
         if (!enabled)
             this.entryField.getCaret().setBlinkRate(0);
@@ -133,6 +136,7 @@ public class UserInterface implements ActionListener {
      * Actionlistener interface for entry textfield.
      */
     public void actionPerformed(final ActionEvent event) {
+        if(!inputEnabled)return;
 
         if (event.getSource() == this.buttonQuit) {
             engine.interpretCommand("quit");
