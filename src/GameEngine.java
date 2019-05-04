@@ -70,42 +70,70 @@ public class GameEngine {
      * Create all the rooms and link their exits together.
      */
     private void createRooms() {
-        String vDefaultImage = "default.jpg";
+        String defaultImage = "default.jpg";
 
         Item itemBattery = new Item("Battery", "An old laptop battery", 9);
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
         Item itemMagicCookie = new Item("MagicCookie", "A cookie in space, eating it might give you superpower", 1);
 
-        Room vPrison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
-        vPrison.getItems().addItem(itemBattery);
-        vPrison.getItems().addItem(itemScrewdriver);
-        vPrison.getItems().addItem(itemMagicCookie);
+        Room prison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
+        prison.getItems().addItem(itemBattery);
+        prison.getItems().addItem(itemScrewdriver);
+        prison.getItems().addItem(itemMagicCookie);
+        this.rooms.put("prison", prison);
 
-        this.rooms.put("prison", vPrison);
+        Room mainCorridor1 = new Room("corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/corridor1.jpg");
+        this.rooms.put("corridor1", mainCorridor1);
 
-        Room vCorridor1 = new Room("corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/corridor1.jpg");
-        this.rooms.put("corridor1", vCorridor1);
+        Room secondaryCorridor = new Room("corridor", "now in another corridor, you can see two closed doors.", "img/corridor2.jpg");
+        this.rooms.put("corridor2", secondaryCorridor);
 
-        Room vCorridor2 = new Room("corridor", "now in another corridor, you can see two closed doors.", "img/corridor2.jpg");
-        this.rooms.put("corridor2", vCorridor2);
+        Room cafeteria = new Room("cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.", defaultImage);
+        this.rooms.put("cafetaria", cafeteria);
 
-        Room vCafeteria = new Room("cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.", vDefaultImage);
-        this.rooms.put("cafetaria", vCafeteria);
+        Room laboratory = new Room("labo", "now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ", defaultImage);
+        this.rooms.put("labo", laboratory);
 
-        Room vLabo = new Room("labo", "now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ", vDefaultImage);
-        this.rooms.put("labo", vLabo);
+        Room engineRoom = new Room("engine", "now inside the engine room, it's really loud.", defaultImage);
+        this.rooms.put("engine", engineRoom);
 
-        vPrison.setExit("east", vCorridor1);
-        vCorridor1.setExit("west", vPrison);
+        Room mainCorridor2 = new Room("corridor","now inside a corridor.",defaultImage);
+        this.rooms.put("corridor3",mainCorridor2);
 
-        vCorridor1.setExit("south", vCorridor2);
-        vCorridor2.setExit("north", vCorridor1);
+        Room meeting = new Room("meeting","now inside a meeting room with a dozen of seats.",defaultImage);
+        this.rooms.put("meeting", meeting);
 
-        vCorridor2.setExit("east", vCafeteria);
-        vCafeteria.setExit("west", vCorridor2);
+        Room escapePods = new Room("escape","now inside the escape pods room! You just run to the last pod available. \nYou hear the flames burning the ship down and blast of into space, you're safe. \nYOU WON THE GAME!",defaultImage);
+        this.rooms.put("escape",escapePods);
 
-        vLabo.setExit("down", vCafeteria);
-        vCafeteria.setExit("up", vLabo);
+        Room cockpit = new Room("cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
+        this.rooms.put("cockpit",cockpit);
+
+        prison.setExit("east", mainCorridor1);
+        mainCorridor1.setExit("west", prison);
+
+        mainCorridor1.setExit("south", secondaryCorridor);
+        secondaryCorridor.setExit("north", mainCorridor1);
+
+        secondaryCorridor.setExit("east", cafeteria);
+        cafeteria.setExit("west", secondaryCorridor);
+
+        laboratory.setExit("down", cafeteria);
+        cafeteria.setExit("up", laboratory);
+
+        secondaryCorridor.setExit("west",engineRoom);
+        engineRoom.setExit("east",secondaryCorridor);
+
+        mainCorridor1.setExit("north",mainCorridor2);
+        mainCorridor2.setExit("south",mainCorridor1);
+
+        mainCorridor2.setExit("east",meeting);
+        meeting.setExit("west",mainCorridor2);
+
+        mainCorridor2.setExit("west",escapePods);
+
+        mainCorridor2.setExit("north", cockpit);
+        cockpit.setExit("south",mainCorridor2);
     }
 
     /**
