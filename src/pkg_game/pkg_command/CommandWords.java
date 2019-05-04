@@ -1,3 +1,8 @@
+package pkg_game.pkg_command;
+
+import pkg_game.GameEngine;
+import pkg_game.UserInterface;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +12,7 @@ public class CommandWords implements Serializable {
             "go", "quit", "help", "look", "eat", "back", "test", "take", "drop", "items", "save", "load", "use","fire", "alea"
     };
 
-    private Map<String,Command> commands;
+    private Map<String, Command> commands;
 
     public CommandWords(final GameEngine engine) {
         this.commands = new HashMap<>();

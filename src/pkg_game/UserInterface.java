@@ -1,3 +1,5 @@
+package pkg_game;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -20,11 +22,11 @@ public class UserInterface implements ActionListener {
     private boolean inputEnabled;
 
     /**
-     * Construct a UserInterface. As a parameter, a Game Engine
+     * Construct a pkg_game.UserInterface. As a parameter, a pkg_game.Game Engine
      * (an object processing and executing the game commands) is
      * needed.
      *
-     * @param gameEngine The GameEngine object implementing the game logic.
+     * @param gameEngine The pkg_game.GameEngine object implementing the game logic.
      */
     public UserInterface(final GameEngine gameEngine) {
         this.engine = gameEngine;

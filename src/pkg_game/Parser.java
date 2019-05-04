@@ -1,3 +1,8 @@
+package pkg_game;
+
+import pkg_game.pkg_command.Command;
+import pkg_game.pkg_command.CommandWords;
+
 import java.io.Serializable;
 import java.util.StringTokenizer;
 
@@ -8,7 +13,7 @@ import java.util.StringTokenizer;
  * This parser takes user input and tries to interpret it as a "Zuul"
  * command. Every time it is called it takes a line as a String and
  * tries to interpret the line as a two word command. It returns the command
- * as an object of class Command.
+ * as an object of class pkg_game.pkg_command.Command.
  *
  * The parser has a set of known command words. It checks user input against
  * the known commands, and if the input is not one of the known commands, it
@@ -23,12 +28,12 @@ public class Parser implements Serializable {
     private CommandWords commandWords;  // holds all valid command words
 
     /**
-     * Create a new Parser.
+     * Create a new pkg_game.Parser.
      * @param engine
      */
     public Parser(final GameEngine engine) {
         this.commandWords = new CommandWords(engine);
-    } // Parser()
+    } // pkg_game.Parser()
 
     /**
      * Get a new command from the user. The command is read by

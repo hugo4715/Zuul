@@ -1,3 +1,8 @@
+package pkg_game.pkg_command;
+
+import pkg_game.GameEngine;
+import pkg_game.Player;
+import pkg_game.UserInterface;
 
 /**
  * A class representing a command
@@ -23,7 +28,7 @@ public abstract class Command {
     /**
      * Get the second command word
      *
-     * @return The second Command word
+     * @return The second pkg_game.pkg_command.Command word
      */
     public String getSecondWord() {
         return this.secondWord;

@@ -1,3 +1,6 @@
+package pkg_game.pkg_room;
+
+import pkg_game.ItemList;
 
 import java.io.Serializable;
 import java.util.*;
@@ -74,7 +77,7 @@ public class Room implements Serializable {
      * Get the exit with the specified name
      *
      * @param exitName The exit name
-     * @return A Door, of null if there isn't any exit with the specified name
+     * @return A pkg_game.pkg_room.Door, of null if there isn't any exit with the specified name
      */
     public Door getExit(final String exitName) {
         return this.exits.get(exitName);
@@ -120,7 +123,7 @@ public class Room implements Serializable {
 
     /**
      * Get the items that are in this room
-     * @return ItemList The list of items
+     * @return pkg_game.ItemList The list of items
      */
     public ItemList getItems() {
         return items;

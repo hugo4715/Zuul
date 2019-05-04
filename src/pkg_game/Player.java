@@ -1,3 +1,7 @@
+package pkg_game;
+
+import pkg_game.pkg_room.Room;
+
 import java.io.Serializable;
 import java.util.Stack;
 

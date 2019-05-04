@@ -1,5 +1,12 @@
+package pkg_game.pkg_command;
+
+import pkg_game.Game;
+import pkg_game.GameEngine;
+import pkg_game.Player;
+import pkg_game.pkg_command.Command;
+
 public class CommandAlea extends Command {
-    protected CommandAlea(GameEngine engine) {
+    protected CommandAlea(final GameEngine engine) {
         super(engine);
     }
 
@@ -16,7 +23,7 @@ public class CommandAlea extends Command {
                 }
             }
 
-            Game.getGame().setRandomSeed(seed);
+            engine.setRandomSeed(seed);
             gui.println("Updated seed to " + seed);
         }else{
             gui.println("This command can only be used in test files!");
