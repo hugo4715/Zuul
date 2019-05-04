@@ -38,7 +38,7 @@ public class Player implements Serializable {
 
     public void goRoom(final Room room){
         //check if we can go from the new room to the last room
-        if(room.isExit(currentRoom)){
+        if(room.leadsTo(currentRoom)){
             lastRooms.push(currentRoom);
         }else{
             lastRooms.clear();

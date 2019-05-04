@@ -8,7 +8,7 @@ import java.util.*;
 public class Room implements Serializable {
     private String name;
     private String description;
-    private HashMap<String, Room> exits;
+    private HashMap<String, Door> exits;
     private String imageName;
     private ItemList items;
 
@@ -32,13 +32,13 @@ public class Room implements Serializable {
     }
 
     /**
-     * Change the exit with the specified name/direction
+     * Change the door with the specified name/direction
      *
      * @param direction The direction of the exit
-     * @param room      The room which the exit is pointing to
+     * @param door      The door which the exit is pointing to
      */
-    public void setExit(final String direction, final Room room) {
-        this.exits.put(direction, room);
+    public void setExit(final String direction, final Door door) {
+        this.exits.put(direction, door);
     }
 
     /**
@@ -54,9 +54,9 @@ public class Room implements Serializable {
      * Get the exit with the specified name
      *
      * @param exitName The exit name
-     * @return A Room, of null if there isn't any exit with the specified name
+     * @return A Door, of null if there isn't any exit with the specified name
      */
-    public Room getExit(final String exitName) {
+    public Door getExit(final String exitName) {
         return this.exits.get(exitName);
     }
 
@@ -103,10 +103,13 @@ public class Room implements Serializable {
         return items;
     }
 
-    /**
-     * Check if the specified room is an exit
-     */
-    public boolean isExit(final Room room){
-        return this.exits.containsValue(room);
+    public boolean leadsTo(final Room room){
+        for(Door door : this.exits.values()){
+            if(room.equals(door.getBack()) || room.equals(door.getFront())){
+                return true;
+            }
+        }
+        return false;
     }
+
 }

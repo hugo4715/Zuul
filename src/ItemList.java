@@ -41,4 +41,8 @@ public class ItemList implements Serializable {
     public int totalWeight(){
         return items.values().stream().mapToInt(Item::getWeight).sum();
     }
+
+    public boolean contains(Item item) {
+        return items.containsValue(item);
+    }
 }

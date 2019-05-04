@@ -129,36 +129,42 @@ public class GameEngine implements Serializable {
         Room cockpit = new Room("cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
         this.rooms.put("cockpit",cockpit);
 
-        prison.setExit("east", mainCorridor1);
-        mainCorridor1.setExit("west", prison);
+        Door door1 = new Door(engineRoom,secondaryCorridor);
+        engineRoom.setExit("east",door1);
+        secondaryCorridor.setExit("west",door1);
 
-        mainCorridor1.setExit("east", laboratory);
-        laboratory.setExit("west",mainCorridor1);
+        Door door2 = new Door(cafeteria,secondaryCorridor);
+        cafeteria.setExit("up",door1);
+        secondaryCorridor.setExit("down",door1);
 
-        mainCorridor1.setExit("south", secondaryCorridor);
-        secondaryCorridor.setExit("north", mainCorridor1);
+        Door door3 = new Door(secondaryCorridor,mainCorridor1);
+        mainCorridor1.setExit("south", door3);
+        secondaryCorridor.setExit("north",door3);
 
-        secondaryCorridor.setExit("east", cafeteria);
-        cafeteria.setExit("west", secondaryCorridor);
+        Door door4 = new Door(prison,mainCorridor1);
+        prison.setExit("east",door4);
+        mainCorridor1.setExit("west",door4);
 
-        laboratory.setExit("down", cafeteria);
-        cafeteria.setExit("up", laboratory);
+        Door door5 = new Door(mainCorridor1,laboratory);
+        laboratory.setExit("west",door5);
+        mainCorridor1.setExit("east",door5);
 
-        secondaryCorridor.setExit("west",engineRoom);
-        engineRoom.setExit("east",secondaryCorridor);
+        Door door6 = new Door(mainCorridor1,mainCorridor2);
+        door6.setLocked(true);
+        door6.setKey(itemScrewdriver);//TODO
+        mainCorridor1.setExit("north",door6);
+        mainCorridor2.setExit("south",door6);
 
-        mainCorridor1.setExit("north",mainCorridor2);
-        mainCorridor2.setExit("south",mainCorridor1);
+        Door door7 = new Door(escapePods,mainCorridor2);
+        mainCorridor2.setExit("west", door7);
 
-        mainCorridor2.setExit("east",meeting);
-        meeting.setExit("west",mainCorridor2);
+        Door door8 = new Door(cockpit,mainCorridor2);
+        cockpit.setExit("south",door8);
+        mainCorridor2.setExit("north",door8);
 
-        mainCorridor2.setExit("west",escapePods);
-
-        mainCorridor2.setExit("north", cockpit);
-        cockpit.setExit("south",mainCorridor2);
-
-        laboratory.setExit("south",cafeteria);
+        Door door9 = new Door(mainCorridor2,meeting);
+        meeting.setExit("west",door9);
+        mainCorridor2.setExit("east",door9);
     }
 
     /**
@@ -424,11 +430,34 @@ public class GameEngine implements Serializable {
 
         Room currentRoom = player.getCurrentRoom();
         // Try to leave current room.
-        Room nextRoom = currentRoom.getExit(direction);
+        Door door = currentRoom.getExit(direction);
 
-        if (nextRoom == null)
+        if (door == null)
             gui.println("There is no door!");
         else {
+
+            if(door.isLocked()){
+                if(door.getKey() == null){
+                    gui.println("This door is locked.");
+                }else{
+                    if(player.getItems().contains(door.getKey())){
+                        door.setLocked(false);
+                        gui.println("You unlocked the door using " + door.getKey().getName());
+                    }else{
+                        gui.println("This door is locked, you need '" + door.getKey().getName() +"' to open it.");
+                    }
+                }
+                return;
+            }
+
+            //get the room at the other side of this door
+            Room nextRoom = door.getOtherSide(player.getCurrentRoom());
+
+            if(nextRoom == null){
+                gui.println("This door cannot be openned from this side!");
+                return;
+            }
+
             player.goRoom(nextRoom);
             gui.println(nextRoom.getLongDescription());
 
