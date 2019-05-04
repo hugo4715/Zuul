@@ -60,6 +60,8 @@ public class GameEngine implements Serializable {
         commands.put("take", this::handleTake);
         commands.put("save",this::handleSave);
         commands.put("load", this::handleLoad);
+        commands.put("use",this::handleUse);
+        commands.put("fire",this::handleFire);
     }
 
     public void setGUI(UserInterface userInterface) {
@@ -90,7 +92,8 @@ public class GameEngine implements Serializable {
 
         Item itemBattery = new Item("Battery", "An old laptop battery", 9);
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
-        Item itemMagicCookie = new Item("MagicCookie", "A cookie in space, eating it might give you superpower", 1);
+        Item itemMagicCookie = new Item("MagicCookie", "A cookie, eating it might give you superpowers", 1);
+        Item itemBeamer = new Item("Beamer", "The beamer", 1);
 
         Room prison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
         prison.getItems().addItem(itemBattery);
@@ -99,6 +102,7 @@ public class GameEngine implements Serializable {
         this.rooms.put("prison", prison);
 
         Room mainCorridor1 = new Room("corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/corridor1.jpg");
+        mainCorridor1.getItems().addItem(itemBeamer);
         this.rooms.put("corridor1", mainCorridor1);
 
         Room secondaryCorridor = new Room("corridor", "now in another corridor, you can see two closed doors.", "img/corridor2.jpg");
@@ -128,6 +132,9 @@ public class GameEngine implements Serializable {
         prison.setExit("east", mainCorridor1);
         mainCorridor1.setExit("west", prison);
 
+        mainCorridor1.setExit("east", laboratory);
+        laboratory.setExit("west",mainCorridor1);
+
         mainCorridor1.setExit("south", secondaryCorridor);
         secondaryCorridor.setExit("north", mainCorridor1);
 
@@ -150,6 +157,8 @@ public class GameEngine implements Serializable {
 
         mainCorridor2.setExit("north", cockpit);
         cockpit.setExit("south",mainCorridor2);
+
+        laboratory.setExit("south",cafeteria);
     }
 
     /**
@@ -173,6 +182,60 @@ public class GameEngine implements Serializable {
     }
 
     // implementations of user commands:
+
+    private void handleUse(Command command){
+        if(!command.hasSecondWord()){
+            gui.println("Use what?");
+            return;
+        }
+
+        Item item = player.getItems().getItem(command.getSecondWord());
+        if(item != null){
+
+            //it's a switch so we can add more usable stuff later
+            switch (item.getName()){
+                case "Beamer":
+                    player.setBeamerTarget(player.getCurrentRoom());
+                    gui.println("Your beamer is charged");
+                    break;
+                    default:
+                        gui.println("You can't use " + item.getName());
+            }
+        }else{
+            gui.println("You don't have " + command.getSecondWord());
+        }
+    }
+
+
+    private void handleFire(Command command){
+        if(!command.hasSecondWord()){
+            gui.println("Fire what?");
+            return;
+        }
+
+        Item item = player.getItems().getItem(command.getSecondWord());
+        if(item != null){
+            //it's a switch so we can add more firable stuff later
+            switch (item.getName()){
+                case "Beamer":
+                    Room target = player.getBeamerTarget();
+                    if(target != null){
+                        player.setCurrentRoom(player.getBeamerTarget());
+                        player.setBeamerTarget(null);
+                        gui.println("You just teleported to another room!");
+                        printLocationInfo();
+                    }else{
+                        gui.println("You beamer isn't charged yet");
+                    }
+
+                    break;
+                default:
+                    gui.println("You can't fire " + item.getName());
+            }
+        }else{
+            gui.println("You don't have " + command.getSecondWord());
+        }
+    }
 
     private void handleLoad(Command command){
         if(!command.hasSecondWord()){
@@ -327,7 +390,7 @@ public class GameEngine implements Serializable {
      */
     private void handleBack(final Command command) {
         if (!player.goBack()) {
-            gui.println("There is no room to go back to!");
+            gui.println("You can't go back");
         } else {
             Room currentRoom = player.getCurrentRoom();
             gui.println(currentRoom.getLongDescription());

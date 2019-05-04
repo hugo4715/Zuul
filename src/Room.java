@@ -19,7 +19,7 @@ public class Room implements Serializable {
      * @param description The room description
      * @param image The room image
      */
-    public Room(String name, final String description, final String image) {
+    public Room(final String name, final String description, final String image) {
         this.name = name;
         this.description = description;
         this.exits = new HashMap<>();
@@ -56,7 +56,7 @@ public class Room implements Serializable {
      * @param exitName The exit name
      * @return A Room, of null if there isn't any exit with the specified name
      */
-    public Room getExit(String exitName) {
+    public Room getExit(final String exitName) {
         return this.exits.get(exitName);
     }
 
@@ -95,7 +95,18 @@ public class Room implements Serializable {
         return msg.toString();
     }
 
+    /**
+     * Get the items that are in this room
+     * @return ItemList The list of items
+     */
     public ItemList getItems() {
         return items;
+    }
+
+    /**
+     * Check if the specified room is an exit
+     */
+    public boolean isExit(final Room room){
+        return this.exits.containsValue(room);
     }
 }

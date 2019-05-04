@@ -6,6 +6,7 @@ public class Player implements Serializable {
     private Stack<Room> lastRooms;
     private ItemList items;
     private int maxWeight;
+    private Room beamerTarget;
 
 
     public Player(Room room) {
@@ -31,8 +32,17 @@ public class Player implements Serializable {
         return false;
     }
 
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
     public void goRoom(final Room room){
-        lastRooms.push(currentRoom);
+        //check if we can go from the new room to the last room
+        if(room.isExit(currentRoom)){
+            lastRooms.push(currentRoom);
+        }else{
+            lastRooms.clear();
+        }
         currentRoom = room;
     }
 
@@ -72,5 +82,13 @@ public class Player implements Serializable {
 
     public void increaseMaxWeight(int amount) {
         this.maxWeight += amount;
+    }
+
+    public void setBeamerTarget(Room room) {
+        this.beamerTarget = room;
+    }
+
+    public Room getBeamerTarget() {
+        return beamerTarget;
     }
 }

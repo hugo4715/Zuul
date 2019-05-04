@@ -20,6 +20,10 @@ public class Game{
         gameEngine.setGUI(userInterface);
     }
 
+    /**
+     * Load the given save file
+     * @throws IOException If the save cannot be load (eg: file does not exists, invalid or corrupt file, etc)
+     */
     public void load(File file) throws IOException{
         try(FileInputStream fis = new FileInputStream(file);ObjectInputStream ois = new ObjectInputStream(fis)){
             byte[] fileMagic = new byte[MAGIC.length];
