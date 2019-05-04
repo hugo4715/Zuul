@@ -7,7 +7,7 @@
     </tr>
     <tr>
         <td>Website</td>
-        <td><a href="perso.esiee.fr/~deniauh">perso.esiee.fr/~deniauh</a></td>
+        <td><a href="http://perso.esiee.fr/~deniauh">perso.esiee.fr/~deniauh</a></td>
     </tr>
     <tr>
         <td>Pipeline</td>
