@@ -2,13 +2,9 @@ package pkg_game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * This class implements a simple graphical user interface with a text entry
@@ -166,7 +162,6 @@ public class UserInterface implements ActionListener {
         mainPanel.add(buttonPanel, BorderLayout.EAST);
 
         this.frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
-
 
         /*
             LISTENERS
