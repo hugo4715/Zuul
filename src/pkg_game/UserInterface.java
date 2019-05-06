@@ -2,10 +2,13 @@ package pkg_game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * This class implements a simple graphical user interface with a text entry
@@ -204,12 +207,25 @@ public class UserInterface implements ActionListener {
             engine.interpretCommand("look");
         }else if(event.getSource() == this.buttonEat){
             engine.interpretCommand("eat");
-        }else if(event.getSource().equals(this.menuSave)){
-            String name = JOptionPane.showInputDialog("Give a name to your save file:");
-            this.engine.interpretCommand("save " + name);
         }else if(event.getSource().equals(this.menuLoad)){
-            String name = JOptionPane.showInputDialog("What save do you want to load:");
-            this.engine.interpretCommand("load " + name);
+            loadGame();
+        }else if(event.getSource().equals(this.menuSave)){
+            String name = JOptionPane.showInputDialog("What save do you want to Save:");
+            this.engine.interpretCommand("save " + name);
+        }
+    }
+
+    private void loadGame() {
+
+        String[] saves = Arrays.stream(Game.SAVE_FOLDER.list((file,filename) -> filename.endsWith(".save")))
+                .filter(filename -> filename != null && !filename.isEmpty())
+                .map(filename -> filename.substring(0,filename.lastIndexOf('.')))
+                .toArray(String[]::new);
+
+        String selectedSave = (String) JOptionPane.showInputDialog(null, "Select you save:", "Load", JOptionPane.DEFAULT_OPTION, null, saves, "0");
+
+        if ( selectedSave != null ){
+            this.engine.interpretCommand("load " + selectedSave);
         }
     }
 

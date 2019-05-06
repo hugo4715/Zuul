@@ -9,6 +9,7 @@ import java.util.Random;
  */
 public class Game{
     private static final byte[] MAGIC = new byte[]{0xA,0x3,0x8,0xB,0x8,0xC};
+    public static final File SAVE_FOLDER = new File("saves");
     private static Game game;
 
     private UserInterface userInterface;
