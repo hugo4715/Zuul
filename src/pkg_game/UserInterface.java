@@ -3,6 +3,8 @@ package pkg_game;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -11,6 +13,7 @@ import java.net.URL;
  */
 public class UserInterface implements ActionListener {
     private GameEngine engine;
+
     private JFrame frame;
     private JTextField entryField;
     private JTextArea log;
@@ -19,6 +22,12 @@ public class UserInterface implements ActionListener {
     private JButton buttonLook;
     private JButton buttonEat;
     private JButton buttonQuit;
+
+    private JMenuBar menuBar;
+    private JMenu menuFile;
+    private JMenuItem menuSave;
+    private JMenuItem menuLoad;
+
     private boolean inputEnabled;
 
     /**
@@ -81,13 +90,37 @@ public class UserInterface implements ActionListener {
      * Set up graphical user interface.
      */
     private void createGUI() {
-        Font font = new Font("Comic Sans MS", 0,20);
+        Font font = new Font("Comic Sans MS", Font.PLAIN,20);
 
         this.frame = new JFrame("Lost in space");
         this.frame.setPreferredSize(new Dimension(1000,800));
+
+        /*
+            MENU BAR
+         */
+        this.menuBar = new JMenuBar();
+        this.menuFile = new JMenu("Game");
+        this.menuFile.setFont(font);
+        this.menuBar.add(this.menuFile);
+
+        this.menuSave = new JMenuItem("Save");
+        this.menuSave.setFont(font);
+        this.menuLoad = new JMenuItem("Load");
+        this.menuLoad.setFont(font);
+
+        this.menuFile.add(menuSave);
+        this.menuFile.add(menuLoad);
+
+        this.frame.setJMenuBar(this.menuBar);
+        /*
+            ENTRY
+         */
         this.entryField = new JTextField(34);
         this.entryField.setFont(font);
 
+        /*
+            LOG
+         */
         this.log = new JTextArea();
         this.log.setEditable(false);
         this.log.setFont(font);
@@ -96,9 +129,15 @@ public class UserInterface implements ActionListener {
         vListScroller.setPreferredSize(new Dimension(200, 200));
         vListScroller.setMinimumSize(new Dimension(100, 100));
 
-        JPanel vPanel = new JPanel();
+        /*
+            IMAGE
+         */
         this.image = new JLabel();
 
+
+        /*
+            BUTTONS
+         */
         this.buttonLook = new JButton("Look");
         this.buttonEat = new JButton("Eat");
         this.buttonQuit = new JButton("Quit");
@@ -113,15 +152,22 @@ public class UserInterface implements ActionListener {
         buttonPanel.add(this.buttonEat);
         buttonPanel.add(this.buttonQuit);
 
-        vPanel.setLayout(new BorderLayout());
-        vPanel.add(this.image, BorderLayout.NORTH);
-        vPanel.add(vListScroller, BorderLayout.CENTER);
-        vPanel.add(this.entryField, BorderLayout.SOUTH);
-        vPanel.add(buttonPanel, BorderLayout.EAST);
+        /*
+            PANEL
+         */
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(this.image, BorderLayout.NORTH);
+        mainPanel.add(vListScroller, BorderLayout.CENTER);
+        mainPanel.add(this.entryField, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, BorderLayout.EAST);
 
-        this.frame.getContentPane().add(vPanel, BorderLayout.CENTER);
+        this.frame.getContentPane().add(mainPanel, BorderLayout.CENTER);
 
-        // add some event listeners to some components
+
+        /*
+            LISTENERS
+         */
         this.frame.addWindowListener(new WindowAdapter() {
             public void windowClosing(final WindowEvent event) {
                 System.exit(0);
@@ -132,7 +178,12 @@ public class UserInterface implements ActionListener {
         this.entryField.addActionListener(this);
         this.buttonQuit.addActionListener(this);
         this.buttonEat.addActionListener(this);
+        this.menuLoad.addActionListener(this);
+        this.menuSave.addActionListener(this);
 
+        /*
+            SHOW
+         */
         this.frame.pack();
         this.frame.setVisible(true);
         this.entryField.requestFocus();
@@ -153,6 +204,12 @@ public class UserInterface implements ActionListener {
             engine.interpretCommand("look");
         }else if(event.getSource() == this.buttonEat){
             engine.interpretCommand("eat");
+        }else if(event.getSource().equals(this.menuSave)){
+            String name = JOptionPane.showInputDialog("Give a name to your save file:");
+            this.engine.interpretCommand("save " + name);
+        }else if(event.getSource().equals(this.menuLoad)){
+            String name = JOptionPane.showInputDialog("What save do you want to load:");
+            this.engine.interpretCommand("load " + name);
         }
     }
 
@@ -162,7 +219,7 @@ public class UserInterface implements ActionListener {
      */
     private void processCommand() {
         String vInput = this.entryField.getText();
-        this.entryField.setText("");
+        clearText();
 
         this.engine.interpretCommand(vInput);
     }
