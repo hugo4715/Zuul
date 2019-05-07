@@ -1,6 +1,5 @@
 package pkg_game.pkg_command;
 
-import pkg_game.Game;
 import pkg_game.GameEngine;
 import pkg_game.Player;
 
@@ -20,7 +19,7 @@ public class CommandLoad extends Command {
         }
         File file = new File("saves" + File.separator + getSecondWord() + ".save");
         try {
-            Game.getGame().load(file);
+            engine.load(file);
             gui.println("Loaded game successfully!");
         } catch (IOException e) {
             e.printStackTrace();

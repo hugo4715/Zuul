@@ -1,6 +1,6 @@
 package pkg_game.pkg_room;
 
-import pkg_game.Game;
+import pkg_game.GameEngine;
 import pkg_game.ItemList;
 
 import java.io.Serializable;
@@ -16,6 +16,7 @@ public class Room implements Serializable {
     private String imageName;
     private ItemList items;
     private boolean endGame;
+    protected GameEngine engine;
 
     /**
      * Create a new room
@@ -24,8 +25,9 @@ public class Room implements Serializable {
      * @param description The room description
      * @param image The room image
      */
-    public Room(final String name, final String description, final String image) {
+    public Room(final GameEngine gameEngine, final String name, final String description, final String image) {
         this.name = name;
+        this.engine = gameEngine;
         this.description = description;
         this.exits = new HashMap<>();
         this.imageName = image;
@@ -148,7 +150,7 @@ public class Room implements Serializable {
      */
     public Door getRandomExit() {
         return exits.values().stream()
-                .skip(Game.getGame().getRandom().nextInt(exits.size()))
+                .skip(engine.getRandom().nextInt(exits.size()))
                 .findAny()
                 .orElse(null);
     }

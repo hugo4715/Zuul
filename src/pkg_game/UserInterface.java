@@ -30,7 +30,7 @@ public class UserInterface implements ActionListener {
     private boolean inputEnabled;
 
     /**
-     * Construct a pkg_game.UserInterface. As a parameter, a pkg_game.Game Engine
+     * Construct a pkg_game.UserInterface. As a parameter, a Game Engine
      * (an object processing and executing the game commands) is
      * needed.
      *
@@ -211,8 +211,12 @@ public class UserInterface implements ActionListener {
     }
 
     private void loadGame() {
-
-        String[] saves = Arrays.stream(Game.SAVE_FOLDER.list((file,filename) -> filename.endsWith(".save")))
+        String[] files = GameEngine.SAVE_FOLDER.list((file,filename) -> filename.endsWith(".save"));
+        if(files == null){
+            JOptionPane.showMessageDialog(null,"There is no save to load!","Error,",JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        String[] saves = Arrays.stream(files)
                 .filter(filename -> filename != null && !filename.isEmpty())
                 .map(filename -> filename.substring(0,filename.lastIndexOf('.')))
                 .toArray(String[]::new);
@@ -230,8 +234,7 @@ public class UserInterface implements ActionListener {
      */
     private void processCommand() {
         String vInput = this.entryField.getText();
-        clearText();
-
+        this.entryField.setText("");
         this.engine.interpretCommand(vInput);
     }
 

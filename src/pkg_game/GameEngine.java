@@ -9,7 +9,7 @@ import pkg_game.pkg_room.Door;
 import pkg_game.pkg_room.Room;
 import pkg_game.pkg_room.TransporterRoom;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -21,6 +21,8 @@ import java.util.stream.Collectors;
  */
 public class GameEngine implements Serializable {
     private static final int TIME_LIMIT = 20;//the number of minutes the player has before the game is over
+    private static final byte[] MAGIC = new byte[]{0xA,0x3,0x8,0xB,0x8,0xC};
+    public static final File SAVE_FOLDER = new File("saves");
 
     private Parser parser;
     private transient UserInterface gui;
@@ -29,11 +31,13 @@ public class GameEngine implements Serializable {
     private int elapsedTime;//the number of minute elapsed
     private boolean isTesting;
     private Set<Entity> entities;
+    private Random random;
 
     /**
      * Constructor for objects of class pkg_game.GameEngine
      */
     public GameEngine() {
+        this.random = new Random();
         this.isTesting = false;
         this.elapsedTime = 0;
         createRooms();
@@ -44,6 +48,57 @@ public class GameEngine implements Serializable {
         this.entities = new HashSet<>();
         this.entities.add(new Frog(this.rooms.get("corridor1"),"Frog", "Hello i'm a frog"));
     }
+
+    public void setRandomSeed(long seed){
+        random.setSeed(seed);
+    }
+
+    public Random getRandom() {
+        return random;
+    }
+
+    /**
+     * Load the given save file
+     * @throws IOException If the save cannot be load (eg: file does not exists, invalid or corrupt file, etc)
+     */
+    public void load(File file) throws IOException{
+        try(FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis)){
+            byte[] fileMagic = new byte[MAGIC.length];
+            ois.read(fileMagic);
+            if(!Arrays.equals(MAGIC,fileMagic)){
+                throw new IOException("This file is not a game file!");
+            }
+            gui.clearText();
+            this.player = (Player) ois.readObject();
+            this.elapsedTime = ois.readInt();
+            this.entities = (Set<Entity>) ois.readObject();
+            this.rooms = (Map<String, Room>) ois.readObject();
+            this.random = (Random) ois.readObject();
+        } catch (ClassNotFoundException e) {
+            throw new IOException("Invalid game save (it may come from a previous game version and thus cannot be loaded.");
+        }
+    }
+
+    /**
+     * Save the game to the specified file
+     * @param file The file to save the game to
+     * @throws IOException If the game can't be saved, reason may include an invalid or unwritable file
+     */
+    public void save(File file) throws IOException {
+        file.getParentFile().mkdirs();//create necessary directories
+
+        //serialize the game to a file
+        try(FileOutputStream fis = new FileOutputStream(file);ObjectOutputStream oos = new ObjectOutputStream(fis)){
+            oos.write(MAGIC);//write the magic bytes, so we know this file is indeed a save file
+            oos.writeObject(this.player);
+            oos.writeInt(this.elapsedTime);
+            oos.writeObject(this.entities);
+            oos.writeObject(this.rooms);
+            oos.writeObject(this.random);
+        }
+    }
+
+
 
     public UserInterface getGui() {
         return gui;
@@ -101,42 +156,42 @@ public class GameEngine implements Serializable {
         Item itemBeamer = new Item("Beamer", "The beamer", 1);
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
 
-        Room prison = new Room("prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
+        Room prison = new Room(this,"prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
         prison.getItems().addItem(itemBattery);
         prison.getItems().addItem(itemMagicCookie);
         this.rooms.put("prison", prison);
 
-        Room mainCorridor1 = new Room("corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/corridor1.jpg");
+        Room mainCorridor1 = new Room(this,"corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/corridor1.jpg");
         mainCorridor1.getItems().addItem(itemBeamer);
         this.rooms.put("corridor1", mainCorridor1);
 
-        Room secondaryCorridor = new Room("corridor", "now in another corridor, you can see two closed doors.", "img/corridor2.jpg");
+        Room secondaryCorridor = new Room(this,"corridor", "now in another corridor, you can see two closed doors.", "img/corridor2.jpg");
         this.rooms.put("corridor2", secondaryCorridor);
 
-        Room cafeteria = new Room("cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.", defaultImage);
+        Room cafeteria = new Room(this,"cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.", defaultImage);
         this.rooms.put("cafetaria", cafeteria);
 
-        Room laboratory = new Room("labo", "now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ", defaultImage);
+        Room laboratory = new Room(this,"labo", "now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ", defaultImage);
         this.rooms.put("labo", laboratory);
 
-        Room engineRoom = new Room("engine", "now inside the engine room, it's really loud.", defaultImage);
+        Room engineRoom = new Room(this,"engine", "now inside the engine room, it's really loud.", defaultImage);
         engineRoom.getItems().addItem(itemScrewdriver);
         this.rooms.put("engine", engineRoom);
 
-        Room mainCorridor2 = new Room("corridor","now inside a corridor.",defaultImage);
+        Room mainCorridor2 = new Room(this,"corridor","now inside a corridor.",defaultImage);
         this.rooms.put("corridor3",mainCorridor2);
 
-        Room meeting = new Room("meeting","now inside a meeting room with a dozen of seats.",defaultImage);
+        Room meeting = new Room(this,"meeting","now inside a meeting room with a dozen of seats.",defaultImage);
         this.rooms.put("meeting", meeting);
 
-        Room escapePods = new Room("escape","now inside the escape pods room! \nYou just run to the last pod available. \nYou hear the flames burning the ship down and blast of into space, you're safe. \nYOU WON THE GAME!",defaultImage);
+        Room escapePods = new Room(this,"escape","now inside the escape pods room! \nYou just run to the last pod available. \nYou hear the flames burning the ship down and blast of into space, you're safe. \nYOU WON THE GAME!",defaultImage);
         escapePods.setEndGame(true);
         this.rooms.put("escape",escapePods);
 
-        Room cockpit = new Room("cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
+        Room cockpit = new Room(this,"cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
         this.rooms.put("cockpit",cockpit);
 
-        Room transporter = new TransporterRoom("transporter", "a strange teletransporter.", defaultImage, this.rooms.values());
+        Room transporter = new TransporterRoom(this,"transporter", "a strange teletransporter.", defaultImage, this.rooms.values());
 
         Door door10 = new Door(transporter, secondaryCorridor);
         secondaryCorridor.setExit("south",door10);
@@ -191,7 +246,7 @@ public class GameEngine implements Serializable {
         for(Entity entity : entities){
             if(entity instanceof EntityMoving){
                 EntityMoving entityMoving = (EntityMoving) entity;
-                if(Game.getGame().getRandom().nextDouble() < entityMoving.moveChance()) {
+                if(random.nextDouble() < entityMoving.moveChance()) {
                     ((EntityMoving)entity).move();
                 }
             }
