@@ -2,6 +2,7 @@ package pkg_game.pkg_command;
 
 import pkg_game.GameEngine;
 import pkg_game.Item;
+import pkg_game.ItemBeamer;
 import pkg_game.Player;
 
 public class CommandUse extends Command {
@@ -18,15 +19,12 @@ public class CommandUse extends Command {
 
         Item item = player.getItems().getItem(getSecondWord());
         if (item != null) {
-
-            //it's a switch so we can add more usable stuff later
-            switch (item.getName()) {
-                case "Beamer":
-                    player.setBeamerTarget(player.getCurrentRoom());
-                    gui.println("Your beamer is charged");
-                    break;
-                default:
-                    gui.println("You can't use " + item.getName());
+            if(item instanceof ItemBeamer){
+                ItemBeamer beamer = (ItemBeamer)item;
+                beamer.setRoom(player.getCurrentRoom());
+                gui.println("Your beamer is charged");
+            }else{
+                gui.println("You can't use " + item.getName());
             }
         } else {
             engine.getGui().println("You don't have " + getSecondWord());

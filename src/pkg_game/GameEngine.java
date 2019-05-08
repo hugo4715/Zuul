@@ -153,7 +153,7 @@ public class GameEngine implements Serializable {
 
         Item itemBattery = new Item("Battery", "An old laptop battery", 9);
         Item itemMagicCookie = new Item("MagicCookie", "A cookie, eating it might give you superpowers", 1);
-        Item itemBeamer = new Item("Beamer", "The beamer", 1);
+        Item itemBeamer = new ItemBeamer();
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
 
         Room prison = new Room(this,"prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
