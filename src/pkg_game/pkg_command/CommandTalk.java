@@ -8,12 +8,12 @@ import pkg_game.Player;
 import java.util.Optional;
 
 public class CommandTalk extends Command {
-    protected CommandTalk(GameEngine engine) {
+    protected CommandTalk(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if(!hasSecondWord()){
             gui.println("Talk to who?");
             return;

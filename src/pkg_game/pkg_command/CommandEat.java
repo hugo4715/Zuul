@@ -5,12 +5,12 @@ import pkg_game.Item;
 import pkg_game.Player;
 
 public class CommandEat extends Command {
-    protected CommandEat(GameEngine engine) {
+    protected CommandEat(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if (hasSecondWord()) {
             Item chosen = player.getItems().getItem(getSecondWord());
 

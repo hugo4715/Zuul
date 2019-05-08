@@ -4,12 +4,12 @@ import pkg_game.GameEngine;
 import pkg_game.Player;
 
 public class CommandQuit extends Command {
-    protected CommandQuit(GameEngine engine) {
+    protected CommandQuit(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if (hasSecondWord()) {
             gui.println("Quit what?");
         } else {

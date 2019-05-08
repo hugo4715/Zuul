@@ -42,7 +42,7 @@ public class UserInterface implements ActionListener {
         this.createGUI();
     }
 
-    public void setEngine(GameEngine engine) {
+    public void setEngine(final GameEngine engine) {
         this.engine = engine;
     }
 

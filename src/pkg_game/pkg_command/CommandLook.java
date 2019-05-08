@@ -4,12 +4,12 @@ import pkg_game.GameEngine;
 import pkg_game.Player;
 
 public class CommandLook extends Command {
-    protected CommandLook(GameEngine engine) {
+    protected CommandLook(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         engine.printLocationInfo();
     }
 }

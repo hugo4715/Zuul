@@ -11,7 +11,7 @@ public class Door implements Serializable {
     private boolean locked;
     private Item key;
 
-    public Door(Room front, Room back) {
+    public Door(final Room front, final Room back) {
         this.front = front;
         this.back = back;
     }
@@ -28,7 +28,7 @@ public class Door implements Serializable {
         return locked;
     }
 
-    public void setLocked(boolean locked) {
+    public void setLocked(final boolean locked) {
         this.locked = locked;
     }
 
@@ -36,7 +36,7 @@ public class Door implements Serializable {
         return key;
     }
 
-    public void setKey(Item key) {
+    public void setKey(final Item key) {
         this.key = key;
     }
 

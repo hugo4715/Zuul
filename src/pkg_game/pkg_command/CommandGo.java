@@ -7,12 +7,12 @@ import pkg_game.pkg_room.Room;
 
 public class CommandGo extends Command {
 
-    protected CommandGo(GameEngine engine) {
+    protected CommandGo(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if (!hasSecondWord()) {
             // if there is no second word, we don't know where to go...
             gui.println("Go where?");

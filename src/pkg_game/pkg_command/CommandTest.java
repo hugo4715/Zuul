@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 
 public class CommandTest extends Command {
-    protected CommandTest(GameEngine engine) {
+    protected CommandTest(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if (hasSecondWord()) {
 
             //search for the specified file

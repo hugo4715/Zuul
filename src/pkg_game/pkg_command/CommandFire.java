@@ -6,12 +6,12 @@ import pkg_game.Player;
 import pkg_game.pkg_room.Room;
 
 public class CommandFire extends Command {
-    protected CommandFire(GameEngine engine) {
+    protected CommandFire(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if(!hasSecondWord()){
             gui.println("Fire what?");
             return;

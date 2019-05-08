@@ -6,12 +6,12 @@ import pkg_game.Player;
 
 public class CommandTake extends Command {
 
-    protected CommandTake(GameEngine engine) {
+    protected CommandTake(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if (hasSecondWord()) {
 
             //search the specified item

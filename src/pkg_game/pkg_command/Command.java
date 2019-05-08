@@ -15,15 +15,15 @@ public abstract class Command implements Serializable {
 
     private String secondWord;
 
-    protected Command(GameEngine engine) {
+    protected Command(final GameEngine engine) {
         this.engine = engine;
     }
 
-    public void setGui(UserInterface gui) {
+    public void setGui(final UserInterface gui) {
         this.gui = gui;
     }
 
-    public void setSecondWord(String secondWord) {
+    public void setSecondWord(final String secondWord) {
         this.secondWord = secondWord;
     }
 

@@ -17,7 +17,7 @@ public class TransporterRoom extends Room {
     }
 
     @Override
-    public Door getExit(String exitName) {
+    public Door getExit(final String exitName) {
         Random random = engine.getRandom();
         return new Door(this,rooms[random.nextInt(rooms.length)]);
     }

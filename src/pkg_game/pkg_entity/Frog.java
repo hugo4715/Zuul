@@ -11,7 +11,7 @@ public class Frog implements Serializable,Entity, EntityTalkable, EntityMoving {
 
     private Room room;
 
-    public Frog(Room room, String name, String text) {
+    public Frog(final Room room,final String name,final String text) {
         this.name = name;
         this.text = text;
         this.room = room;

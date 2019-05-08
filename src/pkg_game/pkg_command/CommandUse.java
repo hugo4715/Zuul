@@ -5,12 +5,12 @@ import pkg_game.Item;
 import pkg_game.Player;
 
 public class CommandUse extends Command {
-    protected CommandUse(GameEngine engine) {
+    protected CommandUse(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if (!hasSecondWord()) {
             engine.getGui().println("Use what?");
             return;

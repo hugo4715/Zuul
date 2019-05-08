@@ -61,7 +61,7 @@ public class CommandWords implements Serializable {
     }
 
 
-    public Command getCommand(String vWord1) {
+    public Command getCommand(final String vWord1) {
         return commands.get(vWord1);
     }
 

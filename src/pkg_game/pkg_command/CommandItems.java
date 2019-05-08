@@ -4,12 +4,12 @@ import pkg_game.GameEngine;
 import pkg_game.Player;
 
 public class CommandItems extends Command {
-    protected CommandItems(GameEngine engine) {
+    protected CommandItems(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if (!player.getItems().isEmpty()) {
             StringBuilder sb = new StringBuilder("Your items: ");
             sb.append(player.getItems().getMessage());

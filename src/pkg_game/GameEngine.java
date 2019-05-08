@@ -49,7 +49,7 @@ public class GameEngine implements Serializable {
         this.entities.add(new Frog(this.rooms.get("corridor1"),"Frog", "Hello i'm a frog"));
     }
 
-    public void setRandomSeed(long seed){
+    public void setRandomSeed(final long seed){
         random.setSeed(seed);
     }
 
@@ -61,7 +61,7 @@ public class GameEngine implements Serializable {
      * Load the given save file
      * @throws IOException If the save cannot be load (eg: file does not exists, invalid or corrupt file, etc)
      */
-    public void load(File file) throws IOException{
+    public void load(final File file) throws IOException{
         try(FileInputStream fis = new FileInputStream(file); ObjectInputStream ois = new ObjectInputStream(fis)){
             byte[] fileMagic = new byte[MAGIC.length];
             ois.read(fileMagic);
@@ -84,7 +84,7 @@ public class GameEngine implements Serializable {
      * @param file The file to save the game to
      * @throws IOException If the game can't be saved, reason may include an invalid or unwritable file
      */
-    public void save(File file) throws IOException {
+    public void save(final File file) throws IOException {
         file.getParentFile().mkdirs();//create necessary directories
 
         //serialize the game to a file
@@ -123,7 +123,7 @@ public class GameEngine implements Serializable {
         return rooms;
     }
 
-    public void setGUI(UserInterface userInterface) {
+    public void setGUI(final UserInterface userInterface) {
         gui = userInterface;
         parser.setGui(userInterface);
         printWelcome();
@@ -269,7 +269,7 @@ public class GameEngine implements Serializable {
         }
     }
 
-    public void setTesting(boolean testing) {
+    public void setTesting(final boolean testing) {
         isTesting = testing;
     }
 

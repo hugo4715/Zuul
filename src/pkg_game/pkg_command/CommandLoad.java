@@ -7,12 +7,12 @@ import java.io.File;
 import java.io.IOException;
 
 public class CommandLoad extends Command {
-    protected CommandLoad(GameEngine engine) {
+    protected CommandLoad(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if(!hasSecondWord()){
             gui.println("Please specify the name of the save.");
             return;

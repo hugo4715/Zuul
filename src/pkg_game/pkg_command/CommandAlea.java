@@ -4,12 +4,12 @@ import pkg_game.GameEngine;
 import pkg_game.Player;
 
 public class CommandAlea extends Command {
-    protected CommandAlea(GameEngine engine) {
+    protected CommandAlea(final GameEngine engine) {
         super(engine);
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(final Player player) {
         if(engine.isTesting()){
 
             long seed = System.currentTimeMillis();//random value

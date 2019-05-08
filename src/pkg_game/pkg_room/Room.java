@@ -39,7 +39,7 @@ public class Room implements Serializable {
      * You can set that for example for traps or the end rooms
      * @param endGame True if the room is the end of the game
      */
-    public void setEndGame(boolean endGame) {
+    public void setEndGame(final boolean endGame) {
         this.endGame = endGame;
     }
 
