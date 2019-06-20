@@ -156,42 +156,42 @@ public class GameEngine implements Serializable {
         Item itemBeamer = new ItemBeamer();
         Item itemScrewdriver = new Item("Screwdriver", "A small screwdriver, it looks quite old but could be used", 5);
 
-        Room prison = new Room(this,"prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/prison.jpg");
+        Room prison = new Room(this,"prison", "locked inside a small prison cell.\nThe power just went off and the door in front off you just openned, you can now get out of this cell. ", "img/img_prison.png");
         prison.getItems().addItem(itemBattery);
         prison.getItems().addItem(itemMagicCookie);
         this.rooms.put("prison", prison);
 
-        Room mainCorridor1 = new Room(this,"corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/corridor1.jpg");
+        Room mainCorridor1 = new Room(this,"corridor", "now inside a small corridor. \nYou can see a two doors, but there are some heavy creates in front of one, you will need to find something to move them. ", "img/img_main_corridor1.png");
         mainCorridor1.getItems().addItem(itemBeamer);
         this.rooms.put("corridor1", mainCorridor1);
 
-        Room secondaryCorridor = new Room(this,"corridor", "now in another corridor, you can see two closed doors.", "img/corridor2.jpg");
+        Room secondaryCorridor = new Room(this,"corridor", "now in another corridor, you can see two closed doors.", "img/img_main_corridor2.png");
         this.rooms.put("corridor2", secondaryCorridor);
 
-        Room cafeteria = new Room(this,"cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.", defaultImage);
+        Room cafeteria = new Room(this,"cafeteria", "in inside what handleLook like a cafeteria, you can get some food supply here, \nbut right now, that's not your priority.", "img/img_cafetaria.png");
         this.rooms.put("cafetaria", cafeteria);
 
-        Room laboratory = new Room(this,"labo", "now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ", defaultImage);
+        Room laboratory = new Room(this,"labo", "now inside a laboratory. \nIt's empty but you can see some strange animals floating inside an aquarium. You can see on a table something lighting up. From the papers on the desks, it's a gravity gun. ", "img/img_labo.png");
         this.rooms.put("labo", laboratory);
 
-        Room engineRoom = new Room(this,"engine", "now inside the engine room, it's really loud.", defaultImage);
+        Room engineRoom = new Room(this,"engine", "now inside the engine room, it's really loud.", "img/img_engine.png");
         engineRoom.getItems().addItem(itemScrewdriver);
         this.rooms.put("engine", engineRoom);
 
-        Room mainCorridor2 = new Room(this,"corridor","now inside a corridor.",defaultImage);
+        Room mainCorridor2 = new Room(this,"corridor","now inside a corridor.","img/img_secondary_corridor.png");
         this.rooms.put("corridor3",mainCorridor2);
 
-        Room meeting = new Room(this,"meeting","now inside a meeting room with a dozen of seats.",defaultImage);
+        Room meeting = new Room(this,"meeting","now inside a meeting room with a dozen of seats.","img/img_meeting.png");
         this.rooms.put("meeting", meeting);
 
-        Room escapePods = new Room(this,"escape","now inside the escape pods room! \nYou just run to the last pod available. \nYou hear the flames burning the ship down and blast of into space, you're safe. \nYOU WON THE GAME!",defaultImage);
+        Room escapePods = new Room(this,"escape","now inside the escape pods room! \nYou just run to the last pod available. \nYou hear the flames burning the ship down and blast of into space, you're safe. \nYOU WON THE GAME!","img/img_pods.png");
         escapePods.setEndGame(true);
         this.rooms.put("escape",escapePods);
 
-        Room cockpit = new Room(this,"cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.",defaultImage);
+        Room cockpit = new Room(this,"cockpit", "now inside the ship's cockpit. You can see that the ship if really starting to break down to pieces. You better find your way out quickly.","img/img_pilotage.png");
         this.rooms.put("cockpit",cockpit);
 
-        Room transporter = new TransporterRoom(this,"transporter", "a strange teletransporter.", defaultImage, this.rooms.values());
+        Room transporter = new TransporterRoom(this,"transporter", "in a strange teletransporter.", "img/img_tp.png", this.rooms.values());
 
         Door door10 = new Door(transporter, secondaryCorridor);
         secondaryCorridor.setExit("south",door10);
